@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Dot.Net.WebApi.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Dot.Net.WebApi.Data;
+using WebApi.Services;
 
 namespace Dot.Net.WebApi
 {
@@ -24,6 +25,7 @@ namespace Dot.Net.WebApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddScoped<IUserService, UserService>();
                     string connString = hostContext.Configuration.GetConnectionString("DefaultConnection");
                     services.AddDbContext<LocalDbContext>(options =>
                     {

@@ -1,33 +1,41 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
- 
+using WebApi.Services;
+using System.Text.Json;
+
 namespace Dot.Net.WebApi.Controllers
 {
     [Route("[controller]")]
+    [ApiController]
     public class UserController : Controller
     {
         private UserRepository _userRepository;
+        private UserService _userService;
 
-        public UserController(UserRepository userRepository)
+        public UserController(UserService userService, UserRepository userRepository)
         {
             _userRepository = userRepository;
+            _userService = userService;
         }
 
         [HttpGet("/user/list")]
         public IActionResult Home()
         {
-            return View(_userRepository.FindAll());
+            var users = _userRepository.FindAll().ToList();
+            return Ok(users);
         }
 
         [HttpGet("/user/add")]
         public IActionResult AddUser([FromBody]User user)
         {
+            
             return View("user/add");
         }
 
@@ -59,6 +67,7 @@ namespace Dot.Net.WebApi.Controllers
         public IActionResult updateUser(int id, [FromBody] User user)
         {
             // TODO: check required fields, if valid call service to update Trade and return Trade list
+
             return Redirect("/trade/list");
         }
 
@@ -69,8 +78,8 @@ namespace Dot.Net.WebApi.Controllers
             
             if (user == null)
                 throw new ArgumentException("Invalid user Id:" + id);
-                        
-            return Redirect("/user/list");
+
+            return Ok("User successfully deleted.");
         }
     }
 }

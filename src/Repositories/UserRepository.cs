@@ -28,11 +28,25 @@ namespace Dot.Net.WebApi.Repositories
 
         public void Add(User user)
         {
+            DbContext.Users.Add(user);
         }
 
         public User FindById(int id)
         {
-            return null;
+            return DbContext.Users.Where(user => id == user.Id).FirstOrDefault();
+        }
+
+        public void Update(User user)
+        {
+            DbContext.Users.Update(user);
+        }
+
+        public void Delete(int id) {
+            var userToDelete = DbContext.Users.Where(user =>user.Id == id).FirstOrDefault();
+            if (userToDelete != null)
+            {
+                DbContext.Users.Remove(userToDelete);
+            }
         }
     }
 }

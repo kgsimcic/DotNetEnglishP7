@@ -5,13 +5,22 @@ using System.Threading.Tasks;
 using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
- 
+using WebApi.Services;
+using WebApi.Repositories;
+
 namespace Dot.Net.WebApi.Controllers
 {
     [Route("[controller]")]
+    [ApiController]
     public class TradeController : Controller
     {
         // TODO: Inject Trade service
+        private readonly ITradeService _tradeService;
+
+        public TradeController(ITradeService tradeService)
+        {
+            _tradeService = tradeService;
+        }
 
         [HttpGet("/trade/list")]
         public IActionResult Home()
@@ -30,7 +39,13 @@ namespace Dot.Net.WebApi.Controllers
         public IActionResult Validate([FromBody]Trade trade)
         {
             // TODO: check data valid and save to db, after saving return Trade list
-            return View("trade/add");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Invalid trade data.");
+            }
+
+            _tradeService.AddTrade(trade);
+            return Ok("Trade added successfully!");
         }
 
         [HttpGet("/trade/update/{id}")]
