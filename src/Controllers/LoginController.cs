@@ -39,13 +39,6 @@ namespace Dot.Net.WebApi.Controllers
             return View(new UnauthorizedObjectResult(errorMessage));
         }
 
-        [HttpGet("/trade/update/{id}")]
-        public IActionResult ShowUpdateForm(int id)
-        {
-            // TODO: get Trade by Id and to model then show to the form
-            return View("trade/update");
-        }
-
         [HttpPost("/trade/update/{id}")]
         public IActionResult updateTrade(int id, [FromBody] Trade rating)
         {

@@ -6,7 +6,7 @@ using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApi.Services;
-using WebApi.Repositories;
+using System.Diagnostics;
 
 namespace Dot.Net.WebApi.Controllers
 {
@@ -23,50 +23,68 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/trade/list")]
-        public IActionResult Home()
+        public IActionResult GetAllTrades()
         {
-            // TODO: find all Trade, add to model
-            return View("trade/list");
+            return Ok(_tradeService.GetAllTrades().ToList());
         }
 
-        [HttpGet("/trade/add")]
-        public IActionResult AddTrade([FromBody]Trade trade)
+        [HttpPost("/trade/add")]
+        public async Task<ActionResult> AddTrade([FromBody]Trade trade)
         {
-            return View("trade/add");
-        }
-
-        [HttpGet("/trade/add")]
-        public IActionResult Validate([FromBody]Trade trade)
-        {
-            // TODO: check data valid and save to db, after saving return Trade list
-            if (!ModelState.IsValid)
+            if (!Validate(trade))
             {
-                return BadRequest("Invalid trade data.");
+                return BadRequest(ModelState);
             }
 
-            _tradeService.AddTrade(trade);
-            return Ok("Trade added successfully!");
+            var createdTrade = await _tradeService.AddTrade(trade);
+
+            return Created($"/trade/{trade.TradeId}", createdTrade);
         }
 
-        [HttpGet("/trade/update/{id}")]
+        public bool Validate([FromBody]Trade trade)
+        {
+            return ModelState.IsValid;
+        }
+
+        /*[HttpGet("/trade/update/{id}")]
         public IActionResult ShowUpdateForm(int id)
         {
             // TODO: get Trade by Id and to model then show to the form
             return View("trade/update");
-        }
+        }*/
 
-        [HttpPost("/trade/update/{id}")]
-        public IActionResult updateTrade(int id, [FromBody] Trade trade)
+        [HttpPut("/trade/update/{id}")]
+        public async Task<ActionResult> UpdateTrade(int id, [FromBody] Trade trade)
         {
-            // TODO: check required fields, if valid call service to update Trade and return Trade list
-            return Redirect("/trade/list");
+            if (trade == null) { return BadRequest("Trade cannot be null."); }
+
+            if (id != trade.TradeId) { return BadRequest("ID in the URL does not match the ID of the trade record."); }
+
+            try
+            {
+                await _tradeService.UpdateTrade(trade);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
 
         [HttpDelete("/trade/{id}")]
-        public IActionResult DeleteTrade(int id)
+        public async Task<ActionResult> DeleteTrade(int id)
         {
-            // TODO: Find Trade by Id and delete the Trade, return to Trade list
-            return Redirect("/trade/list");
+
+            try
+            {
+                await _tradeService.DeleteTrade(id);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
     }
 }

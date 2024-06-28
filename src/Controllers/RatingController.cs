@@ -27,11 +27,9 @@ namespace Dot.Net.WebApi.Controllers
             return View("rating/add");
         }
 
-        [HttpGet("/rating/add")]
-        public IActionResult Validate([FromBody]Rating rating)
+        public bool Validate([FromBody]Rating rating)
         {
-            // TODO: check data valid and save to db, after saving return Rating list
-            return View("rating/add");
+            return ModelState.IsValid;
         }
 
         [HttpGet("/rating/update/{id}")]
@@ -42,17 +40,36 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpPost("/rating/update/{id}")]
-        public IActionResult updateRating(int id, [FromBody] Rating rating)
+        public async Task<ActionResult> updateRating(int id, [FromBody] Rating rating)
         {
-            // TODO: check required fields, if valid call service to update Rating and return Rating list
-            return Redirect("/rating/list");
+            if (rating == null) { return BadRequest("Rating cannot be null."); }
+
+            if (id != rating.Id) { return BadRequest("ID in the URL does not match the ID of the rating."); }
+
+            try
+            {
+                await _ratingService.UpdateRating(rating);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            return NoContent();
         }
 
         [HttpDelete("/rating/{id}")]
-        public IActionResult DeleteRating(int id)
+        public async Task<ActionResult> DeleteRating(int id)
         {
-            // TODO: Find Rating by Id and delete the Rating, return to Rating list
-            return Redirect("/rating/list");
+            try
+            {
+                await _ratingService.DeleteRating(id);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
         }
     }
 }
