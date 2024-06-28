@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using Dot.Net.WebApi.Controllers;
 using Dot.Net.WebApi.Controllers.Domain;
+using System.Threading.Tasks;
 
 namespace Dot.Net.WebApi.Repositories
 {
@@ -19,7 +20,7 @@ namespace Dot.Net.WebApi.Repositories
 
         public Bid FindById(int id)
         {
-            return DbContext.Bids.Where(bidList => bidList.BidListId == id)
+            return DbContext.Bids.Where(bid => bid.BidListId == id)
                                   .FirstOrDefault();
         }
 
@@ -28,22 +29,23 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Bids.ToArray();
         }
 
-        public void Create(Bid bidList)
+        public async Task<Bid> Create(Bid bid)
         {
-            DbContext.Bids.Add(bidList);
+            DbContext.Bids.Add(bid);
+            await DbContext.SaveChangesAsync();
+            return bid;
         }
 
-        public void Update(Bid bidList)
+        public async Task<int> Update(Bid bid)
         {
-            DbContext.Bids.Update(bidList);
+            DbContext.Bids.Update(bid);
+            return await DbContext.SaveChangesAsync();
         }
 
-        public void Delete(int id) {
-            var bidListToDelete = DbContext.Bids.Where(bidList => bidList.BidListId == id).FirstOrDefault();
-            if (bidListToDelete != null)
-            {
-                DbContext.Bids.Remove(bidListToDelete);
-            }
+        public async Task<int> Delete(int id) {
+            var bidToDelete = DbContext.Bids.FirstOrDefault();
+            DbContext.Bids.Remove(bidToDelete);
+            return await DbContext.SaveChangesAsync();
         }
     }
 }

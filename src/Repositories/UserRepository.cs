@@ -55,7 +55,7 @@ namespace Dot.Net.WebApi.Repositories
         }
 
         public async Task<int> Delete(int id) {
-            // check that the user exists before deleting them.
+
             var userToDelete = DbContext.Users.Where(user =>user.Id == id).FirstOrDefault();
             if (userToDelete != null)
             {
