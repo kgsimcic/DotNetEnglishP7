@@ -3,6 +3,7 @@ using System.Linq;
 using Dot.Net.WebApi.Domain;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Dot.Net.WebApi.Repositories
 {
@@ -15,9 +16,10 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public Trade FindById(int id)
+        public async Task<Trade> FindById(int id)
         {
-            return DbContext.Trades.Where(trade => trade.TradeId == id)
+            return await DbContext.Trades.ToAsyncEnumerable().
+                Where(trade => trade.TradeId == id)
                                   .FirstOrDefault();
         }
 
@@ -26,22 +28,27 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Trades.ToArray();
         }
 
-        public void Add(Trade trade)
+        public async Task<Trade> Add(Trade trade)
         {
             DbContext.Trades.Add(trade);
+            await DbContext.SaveChangesAsync();
+            return trade;
         }
 
-        public void Update(Trade trade)
+        public async Task<int> Update(Trade trade)
         {
             DbContext.Trades.Update(trade);
+            return await DbContext.SaveChangesAsync();
         }
 
-        public void Delete(int id) {
+        public async Task<int> Delete(int id) {
             var tradeToDelete = DbContext.Trades.Where(trade => trade.TradeId == id).FirstOrDefault();
             if (tradeToDelete != null)
             {
                 DbContext.Trades.Remove(tradeToDelete);
             }
+            return await DbContext.SaveChangesAsync();
+
         }
     }
 }

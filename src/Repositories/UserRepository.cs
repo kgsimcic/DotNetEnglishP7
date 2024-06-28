@@ -3,6 +3,8 @@ using System.Linq;
 using Dot.Net.WebApi.Domain;
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dot.Net.WebApi.Repositories
 {
@@ -15,9 +17,10 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public User FindByUserName(string userName)
+        public async Task<User> FindByUserName(string userName)
         {
-            return DbContext.Users.Where(user => user.UserName == userName)
+            return await DbContext.Users.ToAsyncEnumerable()
+                .Where(user => user.UserName == userName)
                                   .FirstOrDefault();
         }
 
@@ -26,27 +29,39 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Users.ToArray();
         }
 
-        public void Add(User user)
+        public async Task<User> Add(User user)
         {
             DbContext.Users.Add(user);
+            await DbContext.SaveChangesAsync();
+            return user;
         }
 
-        public User FindById(int id)
+        public async Task<User> FindById(int id)
         {
-            return DbContext.Users.Where(user => id == user.Id).FirstOrDefault();
+            return await DbContext.Users.ToAsyncEnumerable()
+                .Where(user => id == user.Id).FirstOrDefault();
         }
 
-        public void Update(User user)
+        public async Task<int> Update(User user)
         {
-            DbContext.Users.Update(user);
+            // check that the user exists before updating them.
+            var userToUpdate = DbContext.Users.Where(u => u.Id == user.Id).FirstOrDefault();
+            if (userToUpdate != null)
+            {
+                DbContext.Users.Update(user);
+            }
+
+            return await DbContext.SaveChangesAsync();
         }
 
-        public void Delete(int id) {
+        public async Task<int> Delete(int id) {
+            // check that the user exists before deleting them.
             var userToDelete = DbContext.Users.Where(user =>user.Id == id).FirstOrDefault();
             if (userToDelete != null)
             {
                 DbContext.Users.Remove(userToDelete);
             }
+            return await DbContext.SaveChangesAsync();
         }
     }
 }

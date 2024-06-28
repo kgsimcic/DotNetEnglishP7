@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using Dot.Net.WebApi.Controllers;
 using Dot.Net.WebApi.Controllers.Domain;
+using System.Threading.Tasks;
 
 namespace Dot.Net.WebApi.Repositories
 {
@@ -17,9 +18,10 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public Rating FindById(int id)
+        public async Task<Rating> FindById(int id)
         {
-            return DbContext.Ratings.Where(rating => rating.Id == id)
+            return await DbContext.Ratings.ToAsyncEnumerable()
+                .Where(rating => rating.Id == id)
                                   .FirstOrDefault();
         }
 
@@ -28,22 +30,30 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Ratings.ToArray();
         }
 
-        public void Add(Rating rating)
+        public async Task<Rating> Add(Rating rating)
         {
             DbContext.Ratings.Add(rating);
+            await DbContext.SaveChangesAsync();
+            return rating;
         }
 
-        public void Update(Rating rating)
+        public async Task<int> Update(int id)
         {
-            DbContext.Ratings.Update(rating);
+            var ratingToUpdate = DbContext.Ratings.Where(rating => rating.Id == id).FirstOrDefault();
+            if (ratingToUpdate != null)
+            {
+                DbContext.Ratings.Update(ratingToUpdate);
+            }
+            return await DbContext.SaveChangesAsync();
         }
 
-        public void Delete(int id) {
+        public async Task<int> Delete(int id) {
             var ratingToDelete = DbContext.Ratings.Where(rating => rating.Id == id).FirstOrDefault();
             if (ratingToDelete != null)
             {
                 DbContext.Ratings.Remove(ratingToDelete);
             }
+            return await DbContext.SaveChangesAsync();
         }
     }
 }

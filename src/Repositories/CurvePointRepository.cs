@@ -5,6 +5,7 @@ using System;
 using System.Collections.ObjectModel;
 using Dot.Net.WebApi.Controllers;
 using Dot.Net.WebApi.Controllers.Domain;
+using System.Threading.Tasks;
 
 namespace Dot.Net.WebApi.Repositories
 {
@@ -17,9 +18,9 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public CurvePoint FindById(int id)
+        public async Task<CurvePoint> FindById(int id)
         {
-            return DbContext.CurvePoints.Where(curvePoint => curvePoint.Id == id)
+            return await DbContext.CurvePoints.ToAsyncEnumerable().Where(curvePoint => curvePoint.Id == id)
                                   .FirstOrDefault();
         }
 
@@ -28,22 +29,26 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.CurvePoints.ToArray();
         }
 
-        public void Add(CurvePoint curvePoint)
+        public async Task<CurvePoint> Add(CurvePoint curvePoint)
         {
             DbContext.CurvePoints.Add(curvePoint);
+            await DbContext.SaveChangesAsync();
+            return curvePoint;
         }
 
-        public void Update(CurvePoint curvePoint)
+        public Task<int> Update(CurvePoint curvePoint)
         {
             DbContext.CurvePoints.Update(curvePoint);
+            return DbContext.SaveChangesAsync();
         }
 
-        public void Delete(int id) {
+        public Task<int> Delete(int id) {
             var curvePointToDelete = DbContext.CurvePoints.Where(curvePoint => curvePoint.Id == id).FirstOrDefault();
             if (curvePointToDelete != null)
             {
                 DbContext.CurvePoints.Remove(curvePointToDelete);
             }
+            return DbContext.SaveChangesAsync();
         }
     }
 }
