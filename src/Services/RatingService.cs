@@ -33,6 +33,12 @@ namespace WebApi.Services
 
         public async Task<int> DeleteRating(int id)
         {
+            var existingRating = _ratingRepository.FindById(id);
+            if (existingRating == null)
+            {
+                throw new KeyNotFoundException("Rating not found.");
+            }
+
             return await _ratingRepository.Delete(id);
         }
 

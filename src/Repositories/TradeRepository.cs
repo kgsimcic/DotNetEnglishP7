@@ -42,10 +42,7 @@ namespace Dot.Net.WebApi.Repositories
 
         public async Task<int> Delete(int id) {
             var tradeToDelete = DbContext.Trades.Where(trade => trade.TradeId == id).FirstOrDefault();
-            if (tradeToDelete != null)
-            {
-                DbContext.Trades.Remove(tradeToDelete);
-            }
+            DbContext.Trades.Remove(tradeToDelete);
             return await DbContext.SaveChangesAsync();
 
         }

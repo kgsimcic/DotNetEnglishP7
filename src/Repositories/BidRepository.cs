@@ -29,11 +29,10 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Bids.ToArray();
         }
 
-        public async Task<Bid> Create(Bid bid)
+        public async Task<int> Create(Bid bid)
         {
             DbContext.Bids.Add(bid);
-            await DbContext.SaveChangesAsync();
-            return bid;
+            return await DbContext.SaveChangesAsync();
         }
 
         public async Task<int> Update(Bid bid)

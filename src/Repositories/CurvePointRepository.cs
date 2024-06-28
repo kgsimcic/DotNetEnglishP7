@@ -29,11 +29,10 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.CurvePoints.ToArray();
         }
 
-        public async Task<CurvePoint> Create(CurvePoint curvePoint)
+        public async Task<int> Create(CurvePoint curvePoint)
         {
             DbContext.CurvePoints.Add(curvePoint);
-            await DbContext.SaveChangesAsync();
-            return curvePoint;
+            return await DbContext.SaveChangesAsync();
         }
 
         public Task<int> Update(CurvePoint curvePoint)
@@ -44,10 +43,7 @@ namespace Dot.Net.WebApi.Repositories
 
         public Task<int> Delete(int id) {
             var curvePointToDelete = DbContext.CurvePoints.Where(curvePoint => curvePoint.Id == id).FirstOrDefault();
-            if (curvePointToDelete != null)
-            {
-                DbContext.CurvePoints.Remove(curvePointToDelete);
-            }
+            DbContext.CurvePoints.Remove(curvePointToDelete);
             return DbContext.SaveChangesAsync();
         }
     }

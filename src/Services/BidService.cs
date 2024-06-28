@@ -33,6 +33,12 @@ namespace WebApi.Services
 
         public async Task<int> DeleteBid(int id)
         {
+            var existingBid = _bidRepository.FindById(id);
+            if (existingBid == null)
+            {
+                throw new KeyNotFoundException("Bid not found.");
+            }
+
             return await _bidRepository.Delete(id);
         }
 

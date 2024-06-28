@@ -56,10 +56,7 @@ namespace Dot.Net.WebApi.Repositories
         public async Task<int> Delete(int id) {
 
             var userToDelete = DbContext.Users.Where(user =>user.Id == id).FirstOrDefault();
-            if (userToDelete != null)
-            {
-                DbContext.Users.Remove(userToDelete);
-            }
+            DbContext.Users.Remove(userToDelete);
             return await DbContext.SaveChangesAsync();
         }
     }

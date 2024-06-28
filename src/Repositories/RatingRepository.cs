@@ -30,7 +30,7 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Ratings.ToArray();
         }
 
-        public async Task<Rating> Create(Rating rating)
+        public async Task<int> Create(Rating rating)
         {
             DbContext.Ratings.Add(rating);
             return await DbContext.SaveChangesAsync();
@@ -44,10 +44,7 @@ namespace Dot.Net.WebApi.Repositories
 
         public async Task<int> Delete(int id) {
             var ratingToDelete = DbContext.Ratings.Where(rating => rating.Id == id).FirstOrDefault();
-            if (ratingToDelete != null)
-            {
-                DbContext.Ratings.Remove(ratingToDelete);
-            }
+            DbContext.Ratings.Remove(ratingToDelete);
             return await DbContext.SaveChangesAsync();
         }
     }

@@ -33,6 +33,12 @@ namespace WebApi.Services
 
         public async Task<int> DeleteCurvePoint(int id)
         {
+            var existingCurvePoint = _curvePointRepository.FindById(id);
+            if (existingCurvePoint == null)
+            {
+                throw new KeyNotFoundException("Curve point not found.");
+            }
+
             return await _curvePointRepository.Delete(id);
         }
 

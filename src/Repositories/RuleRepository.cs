@@ -47,10 +47,7 @@ namespace Dot.Net.WebApi.Repositories
 
         public async Task<int> Delete(int id) {
             var ruleToDelete = DbContext.Rules.Where(ruleName => ruleName.Id == id).FirstOrDefault();
-            if (ruleToDelete != null)
-            {
-                DbContext.Rules.Remove(ruleToDelete);
-            }
+            DbContext.Rules.Remove(ruleToDelete);
             return await DbContext.SaveChangesAsync();
         }
     }

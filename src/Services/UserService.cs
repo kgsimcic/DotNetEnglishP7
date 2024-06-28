@@ -42,6 +42,12 @@ namespace WebApi.Services
 
         public async Task<int> DeleteUser(int id)
         {
+            var existingUser = _userRepository.FindById(id);
+            if (existingUser == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
             return await _userRepository.Delete(id);
         }
 

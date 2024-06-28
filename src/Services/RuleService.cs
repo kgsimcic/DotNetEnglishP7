@@ -28,12 +28,17 @@ namespace WebApi.Services
 
         public async Task<int> CreateRule(Rule rule)
         {
-            await _ruleRepository.Create(rule);
-            return rule;
+            return await _ruleRepository.Create(rule);
         }
 
         public async Task<int> DeleteRule(int id)
         {
+            var existingRule = _ruleRepository.FindById(id);
+            if (existingRule == null)
+            {
+                throw new KeyNotFoundException("Rule not found.");
+            }
+
             return await _ruleRepository.Delete(id);
         }
 

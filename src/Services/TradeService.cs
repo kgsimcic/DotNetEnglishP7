@@ -31,6 +31,12 @@ namespace WebApi.Services
 
         public async Task<int> DeleteTrade(int id)
         {
+            var existingTrade = _tradeRepository.FindById(id);
+            if (existingTrade == null)
+            {
+                throw new KeyNotFoundException("Trade not found.");
+            }
+
             return await _tradeRepository.Delete(id);
         }
 
