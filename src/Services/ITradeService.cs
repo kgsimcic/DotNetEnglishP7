@@ -10,6 +10,6 @@ namespace WebApi.Services
         Task<Trade> GetTrade(int id);
         Task<Trade> CreateTrade(Trade trade);
         Task<int> DeleteTrade(int id);
-        Task<int> UpdateTrade(Trade trade);
+        Task<int> UpdateTrade(int id, Trade trade);
     }
 }

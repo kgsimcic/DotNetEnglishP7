@@ -66,7 +66,7 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _ratingService.UpdateRating(rating);
+                await _ratingService.UpdateRating(id, rating);
             }
             catch (KeyNotFoundException)
             {

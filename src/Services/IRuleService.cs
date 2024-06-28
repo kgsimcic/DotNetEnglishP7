@@ -11,6 +11,6 @@ namespace WebApi.Services
         Task<Rule> GetRule(int id);
         Task<Rule> CreateRule(Rule ruleName);
         Task<int> DeleteRule(int id);
-        Task<int> UpdateRule(Rule ruleName);
+        Task<int> UpdateRule(int id, Rule ruleName);
     }
 }

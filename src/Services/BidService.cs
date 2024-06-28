@@ -35,7 +35,7 @@ namespace WebApi.Services
             return await _bidRepository.Delete(id);
         }
 
-        public async Task<int> UpdateBid(Bid bid)
+        public async Task<int> UpdateBid(int id,Bid bid)
         {
             return await _bidRepository.Update(bid);
         }

@@ -35,7 +35,7 @@ namespace WebApi.Services
             return await _ratingRepository.Delete(id);
         }
 
-        public async Task<int> UpdateRating(Rating rating)
+        public async Task<int> UpdateRating(int id, Rating rating)
         {
             return await _ratingRepository.Update(rating);
         }

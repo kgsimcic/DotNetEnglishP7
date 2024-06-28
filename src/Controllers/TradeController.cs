@@ -68,7 +68,7 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _tradeService.UpdateTrade(trade);
+                await _tradeService.UpdateTrade(id, trade);
             }
             catch (KeyNotFoundException)
             {

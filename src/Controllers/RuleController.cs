@@ -63,7 +63,7 @@ namespace Dot.Net.WebApi.Controllers
         }*/
 
         [HttpPut("/ruleName/update/{id}")]
-        public async Task<ActionResult> updateRule(int id, [FromBody] Rule rule)
+        public async Task<ActionResult> UpdateRule(int id, [FromBody] Rule rule)
         {
             if (rule == null) { return BadRequest("Rule cannot be null."); }
 
@@ -71,7 +71,7 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _ruleService.UpdateRule(rule);
+                await _ruleService.UpdateRule(id, rule);
             }
             catch (KeyNotFoundException)
             {

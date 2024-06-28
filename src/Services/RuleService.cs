@@ -36,7 +36,7 @@ namespace WebApi.Services
             return await _ruleRepository.Delete(id);
         }
 
-        public async Task<int> UpdateRule(Rule rule)
+        public async Task<int> UpdateRule(int id, Rule rule)
         {
             return await _ruleRepository.Update(rule);
         }

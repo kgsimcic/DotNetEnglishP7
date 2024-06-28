@@ -92,7 +92,7 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _userService.UpdateUser(user);
+                await _userService.UpdateUser(id, user);
             }
             catch (KeyNotFoundException)
             {

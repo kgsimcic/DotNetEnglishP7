@@ -61,7 +61,7 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _bidService.UpdateBid(bid);
+                await _bidService.UpdateBid(id, bid);
             }
             catch (KeyNotFoundException)
             {

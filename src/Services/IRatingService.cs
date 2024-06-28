@@ -12,6 +12,6 @@ namespace WebApi.Services
         Task<Rating> GetRating(int id);
         Task<Rating> CreateRating(Rating rating);
         Task<int> DeleteRating(int id);
-        Task<int> UpdateRating(Rating rating);
+        Task<int> UpdateRating(int id, Rating rating);
     }
 }

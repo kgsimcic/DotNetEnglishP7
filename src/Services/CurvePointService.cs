@@ -35,7 +35,7 @@ namespace WebApi.Services
             return await _curvePointRepository.Delete(id);
         }
 
-        public async Task<int> UpdateCurvePoint(CurvePoint curvePoint)
+        public async Task<int> UpdateCurvePoint(int id, CurvePoint curvePoint)
         {
             return await _curvePointRepository.Update(curvePoint);
         }

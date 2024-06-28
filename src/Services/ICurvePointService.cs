@@ -12,6 +12,6 @@ namespace WebApi.Services
         Task<CurvePoint> GetCurvePoint(int id);
         Task<CurvePoint> CreateCurvePoint(CurvePoint curvePoint);
         Task<int> DeleteCurvePoint(int id);
-        Task<int> UpdateCurvePoint(CurvePoint curvePoint);
+        Task<int> UpdateCurvePoint(int id, CurvePoint curvePoint);
     }
 }

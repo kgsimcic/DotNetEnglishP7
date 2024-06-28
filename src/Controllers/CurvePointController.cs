@@ -60,7 +60,7 @@ namespace Dot.Net.WebApi.Controllers
         }*/
 
         [HttpPut("/curvepoints/{id}")]
-        public IActionResult UpdateCurvePoint(int id, [FromBody] CurvePoint curvePoint)
+        public async Task<ActionResult> UpdateCurvePoint(int id, [FromBody] CurvePoint curvePoint)
         {
             if (curvePoint == null) { return BadRequest("User cannot be null."); }
 
@@ -68,7 +68,7 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _curvePointService.UpdateCurvePoint(curvePoint);
+                await _curvePointService.UpdateCurvePoint(id, curvePoint);
             }
             catch (KeyNotFoundException)
             {

@@ -12,6 +12,6 @@ namespace WebApi.Services
         Task<Bid> GetBid(int id);
         Task<Bid> CreateBid(Bid bid);
         Task<int> DeleteBid(int id);
-        Task<int> UpdateBid(Bid bid);
+        Task<int> UpdateBid(int id, Bid bid);
     }
 }

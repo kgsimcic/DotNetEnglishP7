@@ -33,7 +33,7 @@ namespace WebApi.Services
             return await _tradeRepository.Delete(id);
         }
 
-        public async Task<int> UpdateTrade(Trade trade)
+        public async Task<int> UpdateTrade(int id, Trade trade)
         {
             return await _tradeRepository.Update(trade);
         }
