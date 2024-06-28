@@ -24,7 +24,7 @@ namespace WebApi.Services
             return await _userRepository.FindByUserName(userName);
         }
 
-        public async Task<User> CreateUser(User user)
+        public async Task<int> CreateUser(User user)
         {
             return await _userRepository.Create(user);
         }

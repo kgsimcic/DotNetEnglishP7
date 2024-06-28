@@ -29,11 +29,10 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Rules.ToArray();
         }
 
-        public async Task<Rule> Create(Rule ruleName)
+        public async Task<int> Create(Rule ruleName)
         {
             DbContext.Rules.Add(ruleName);
-            await DbContext.SaveChangesAsync();
-            return ruleName;
+            return await DbContext.SaveChangesAsync();
         }
 
         public async Task<int> Update(Rule rule)

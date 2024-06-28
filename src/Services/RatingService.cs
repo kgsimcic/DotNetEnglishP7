@@ -26,7 +26,7 @@ namespace WebApi.Services
             return await _ratingRepository.FindById(id);
         }
 
-        public async Task<Rating> CreateRating(Rating rating)
+        public async Task<int> CreateRating(Rating rating)
         {
             return await _ratingRepository.Create(rating);
         }

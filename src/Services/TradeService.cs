@@ -24,7 +24,7 @@ namespace WebApi.Services
             return await _tradeRepository.FindById(id);
         }
 
-        public async Task<Trade> CreateTrade(Trade trade)
+        public async Task<int> CreateTrade(Trade trade)
         {
             return await _tradeRepository.Create(trade);
         }

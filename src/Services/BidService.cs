@@ -26,7 +26,7 @@ namespace WebApi.Services
             return await _bidRepository.FindById(id);
         }
 
-        public async Task<Bid> CreateBid(Bid bid)
+        public async Task<int> CreateBid(Bid bid)
         {
             return await _bidRepository.Create(bid);
         }

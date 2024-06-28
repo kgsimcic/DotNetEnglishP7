@@ -9,7 +9,7 @@ namespace WebApi.Services
     {
         Rule[] GetAllRules();
         Task<Rule> GetRule(int id);
-        Task<Rule> CreateRule(Rule ruleName);
+        Task<int> CreateRule(Rule ruleName);
         Task<int> DeleteRule(int id);
         Task<int> UpdateRule(int id, Rule ruleName);
     }

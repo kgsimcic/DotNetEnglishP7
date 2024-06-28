@@ -29,11 +29,10 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Users.ToArray();
         }
 
-        public async Task<User> Create(User user)
+        public async Task<int> Create(User user)
         {
             DbContext.Users.Add(user);
-            await DbContext.SaveChangesAsync();
-            return user;
+            return await DbContext.SaveChangesAsync();
         }
 
         public async Task<User> FindById(int id)

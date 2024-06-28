@@ -26,7 +26,7 @@ namespace WebApi.Services
             return await _ruleRepository.FindById(id);
         }
 
-        public async Task<Rule> CreateRule(Rule rule)
+        public async Task<int> CreateRule(Rule rule)
         {
             await _ruleRepository.Create(rule);
             return rule;

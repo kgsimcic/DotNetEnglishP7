@@ -10,8 +10,8 @@ namespace WebApi.Services
         Task<User> GetUserByName(string userName);
 
         Task<User> GetUserById(int id);
-        Task<User> CreateUser(User user);
-        Task<int> UpdateUser(User user);
+        Task<int> CreateUser(User user);
+        Task<int> UpdateUser(int id, User user);
         Task<int> DeleteUser(int id);
     }
 }

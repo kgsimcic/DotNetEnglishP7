@@ -33,17 +33,12 @@ namespace Dot.Net.WebApi.Repositories
         public async Task<Rating> Create(Rating rating)
         {
             DbContext.Ratings.Add(rating);
-            await DbContext.SaveChangesAsync();
-            return rating;
+            return await DbContext.SaveChangesAsync();
         }
 
         public async Task<int> Update(Rating rating)
         {
-            var ratingToUpdate = DbContext.Ratings.Where(r => r.Id == rating.Id).FirstOrDefault();
-            if (ratingToUpdate != null)
-            {
-                DbContext.Ratings.Update(ratingToUpdate);
-            }
+            DbContext.Ratings.Update(rating);
             return await DbContext.SaveChangesAsync();
         }
 

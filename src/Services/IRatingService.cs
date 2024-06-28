@@ -10,7 +10,7 @@ namespace WebApi.Services
     {
         Rating[] GetAllRatings();
         Task<Rating> GetRating(int id);
-        Task<Rating> CreateRating(Rating rating);
+        Task<int> CreateRating(Rating rating);
         Task<int> DeleteRating(int id);
         Task<int> UpdateRating(int id, Rating rating);
     }

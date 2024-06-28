@@ -26,7 +26,7 @@ namespace WebApi.Services
             return await _curvePointRepository.FindById(id);
         }
 
-        public async Task<CurvePoint> CreateCurvePoint(CurvePoint curvePoint)
+        public async Task<int> CreateCurvePoint(CurvePoint curvePoint)
         {
             return await _curvePointRepository.Create(curvePoint);
         }
