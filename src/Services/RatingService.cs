@@ -3,6 +3,7 @@ using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace WebApi.Services
 {
@@ -19,24 +20,24 @@ namespace WebApi.Services
             return _ratingRepository.FindAll();
         }
 
-        public Rating GetRating(int id)
+        public async Task<Rating> GetRating(int id)
         {
-            return _ratingRepository.FindById(id);
+            return await _ratingRepository.FindById(id);
         }
 
-        public void CreateRating(Rating rating)
+        public async Task<Rating> CreateRating(Rating rating)
         {
-            _ratingRepository.Add(rating);
+            return await _ratingRepository.Create(rating);
         }
 
-        public void DeleteRating(int id)
+        public async Task<int> DeleteRating(int id)
         {
-            _ratingRepository.Delete(id);
+            return await _ratingRepository.Delete(id);
         }
 
-        public void UpdateRating(Rating rating)
+        public async Task<int> UpdateRating(Rating rating)
         {
-            _ratingRepository.Update(rating);
+            return await _ratingRepository.Update(rating);
         }
     }
 }

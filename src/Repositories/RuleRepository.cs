@@ -36,12 +36,12 @@ namespace Dot.Net.WebApi.Repositories
             return ruleName;
         }
 
-        public async Task<int> Update(int id)
+        public async Task<int> Update(Rule rule)
         {
-            var ruleToUpdate = DbContext.Trades.Where(trade => trade.TradeId == id).FirstOrDefault();
+            var ruleToUpdate = DbContext.Rules.Where(r => r.Id == rule.Id).FirstOrDefault();
             if (ruleToUpdate != null)
             {
-                DbContext.Trades.Update(ruleToUpdate);
+                DbContext.Rules.Update(rule);
             }
             return await DbContext.SaveChangesAsync();
         }

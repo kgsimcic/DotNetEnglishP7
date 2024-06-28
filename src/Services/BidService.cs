@@ -3,6 +3,7 @@ using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace WebApi.Services
 {
@@ -19,24 +20,24 @@ namespace WebApi.Services
             return _bidRepository.FindAll();
         }
 
-        public Bid GetBid(int id)
+        public async Task<Bid> GetBid(int id)
         {
-            return _bidRepository.FindById(id);
+            return await _bidRepository.FindById(id);
         }
 
-        public void CreateBid(Bid bidList)
+        public async Task<Bid> CreateBid(Bid bid)
         {
-            _bidRepository.Create(bidList);
+            return await _bidRepository.Create(bid);
         }
 
-        public void DeleteBid(int id)
+        public async Task<int> DeleteBid(int id)
         {
-            _bidRepository.Delete(id);
+            return await _bidRepository.Delete(id);
         }
 
-        public void UpdateBid(Bid bidList)
+        public async Task<int> UpdateBid(Bid bid)
         {
-            _bidRepository.Update(bidList);
+            return await _bidRepository.Update(bid);
         }
     }
 }

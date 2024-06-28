@@ -25,7 +25,7 @@ namespace WebApi.Services
 
         public async Task<Trade> CreateTrade(Trade trade)
         {
-            return await _tradeRepository.Add(trade);
+            return await _tradeRepository.Create(trade);
         }
 
         public async Task<int> DeleteTrade(int id)

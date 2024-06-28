@@ -15,19 +15,19 @@ namespace WebApi.Services
             _ruleRepository = ruleRepository;
         }
 
-        public RuleName[] GetAllRules()
+        public Rule[] GetAllRules()
         {
             return _ruleRepository.FindAll();
         }
 
-        public async Task<RuleName> GetRule(int id)
+        public async Task<Rule> GetRule(int id)
         {
             return await _ruleRepository.FindById(id);
         }
 
-        public async Task<RuleName> CreateRule(RuleName rule)
+        public async Task<Rule> CreateRule(Rule rule)
         {
-            await _ruleRepository.Add(rule);
+            await _ruleRepository.Create(rule);
             return rule;
         }
 
@@ -36,7 +36,7 @@ namespace WebApi.Services
             return await _ruleRepository.Delete(id);
         }
 
-        public async Task<int> UpdateRule(RuleName rule)
+        public async Task<int> UpdateRule(Rule rule)
         {
             return await _ruleRepository.Update(rule);
         }

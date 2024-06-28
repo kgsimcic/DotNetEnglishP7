@@ -3,6 +3,7 @@ using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace WebApi.Services
 {
@@ -19,24 +20,24 @@ namespace WebApi.Services
             return _curvePointRepository.FindAll();
         }
 
-        public CurvePoint GetCurvePoint(int id)
+        public async Task<CurvePoint> GetCurvePoint(int id)
         {
-            return _curvePointRepository.FindById(id);
+            return await _curvePointRepository.FindById(id);
         }
 
-        public void CreateCurvePoint(CurvePoint curvePoint)
+        public async Task<CurvePoint> CreateCurvePoint(CurvePoint curvePoint)
         {
-            _curvePointRepository.Create(curvePoint);
+            return await _curvePointRepository.Create(curvePoint);
         }
 
-        public void DeleteCurvePoint(int id)
+        public async Task<int> DeleteCurvePoint(int id)
         {
-            _curvePointRepository.Delete(id);
+            return await _curvePointRepository.Delete(id);
         }
 
-        public void UpdateCurvePoint(CurvePoint curvePoint)
+        public async Task<int> UpdateCurvePoint(CurvePoint curvePoint)
         {
-            _curvePointRepository.Update(curvePoint);
+            return await _curvePointRepository.Update(curvePoint);
         }
     }
 }

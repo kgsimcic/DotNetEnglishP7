@@ -18,9 +18,9 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public Bid FindById(int id)
+        public async Task<Bid> FindById(int id)
         {
-            return DbContext.Bids.Where(bid => bid.BidListId == id)
+            return await DbContext.Bids.ToAsyncEnumerable().Where(bid => bid.BidListId == id)
                                   .FirstOrDefault();
         }
 

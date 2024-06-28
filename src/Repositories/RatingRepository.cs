@@ -37,9 +37,9 @@ namespace Dot.Net.WebApi.Repositories
             return rating;
         }
 
-        public async Task<int> Update(int id)
+        public async Task<int> Update(Rating rating)
         {
-            var ratingToUpdate = DbContext.Ratings.Where(rating => rating.Id == id).FirstOrDefault();
+            var ratingToUpdate = DbContext.Ratings.Where(r => r.Id == rating.Id).FirstOrDefault();
             if (ratingToUpdate != null)
             {
                 DbContext.Ratings.Update(ratingToUpdate);
