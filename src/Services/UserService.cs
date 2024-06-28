@@ -1,6 +1,7 @@
 ﻿using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebApi.Services
@@ -27,8 +28,15 @@ namespace WebApi.Services
         {
             return await _userRepository.Create(user);
         }
-        public async Task<int> UpdateUser(User user)
+        public async Task<int> UpdateUser(int id, User user)
         {
+
+            var existingUser = _userRepository.FindById(id);
+            if (existingUser == null)
+            {
+                throw new KeyNotFoundException("User not found.");
+            }
+
             return await _userRepository.Update(user);
         }
 

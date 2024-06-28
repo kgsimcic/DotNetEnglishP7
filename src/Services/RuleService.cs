@@ -3,6 +3,7 @@ using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebApi.Services
@@ -38,6 +39,12 @@ namespace WebApi.Services
 
         public async Task<int> UpdateRule(int id, Rule rule)
         {
+            var existingRule = _ruleRepository.FindById(id);
+            if (existingRule == null)
+            {
+                throw new KeyNotFoundException("Rule not found.");
+            }
+
             return await _ruleRepository.Update(rule);
         }
     }

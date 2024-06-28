@@ -3,6 +3,7 @@ using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebApi.Services
@@ -37,6 +38,11 @@ namespace WebApi.Services
 
         public async Task<int> UpdateBid(int id,Bid bid)
         {
+            var existingBid = _bidRepository.FindById(id);
+            if (existingBid == null)
+            {
+                throw new KeyNotFoundException("Bid not found.");
+            }
             return await _bidRepository.Update(bid);
         }
     }

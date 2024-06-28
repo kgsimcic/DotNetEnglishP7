@@ -3,6 +3,7 @@ using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebApi.Services
@@ -37,6 +38,12 @@ namespace WebApi.Services
 
         public async Task<int> UpdateRating(int id, Rating rating)
         {
+            var existingRating = _ratingRepository.FindById(id);
+            if (existingRating == null)
+            {
+                throw new KeyNotFoundException("Rating not found.");
+            }
+
             return await _ratingRepository.Update(rating);
         }
     }

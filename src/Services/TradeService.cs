@@ -1,6 +1,7 @@
 ﻿using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace WebApi.Services
@@ -35,6 +36,12 @@ namespace WebApi.Services
 
         public async Task<int> UpdateTrade(int id, Trade trade)
         {
+            var existingTrade = _tradeRepository.FindById(id);
+            if (existingTrade == null)
+            {
+                throw new KeyNotFoundException("Trade not found.");
+            }
+
             return await _tradeRepository.Update(trade);
         }
     }
