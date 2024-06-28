@@ -30,7 +30,7 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Ratings.ToArray();
         }
 
-        public async Task<Rating> Add(Rating rating)
+        public async Task<Rating> Create(Rating rating)
         {
             DbContext.Ratings.Add(rating);
             await DbContext.SaveChangesAsync();

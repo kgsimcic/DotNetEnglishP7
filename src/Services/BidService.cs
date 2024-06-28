@@ -26,7 +26,7 @@ namespace WebApi.Services
 
         public void CreateBid(Bid bidList)
         {
-            _bidRepository.Add(bidList);
+            _bidRepository.Create(bidList);
         }
 
         public void DeleteBid(int id)

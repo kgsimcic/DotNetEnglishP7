@@ -8,7 +8,7 @@ namespace WebApi.Services
     {
         Trade[] GetAllTrades();
         Task<Trade> GetTrade(int id);
-        Task<Trade> AddTrade(Trade trade);
+        Task<Trade> CreateTrade(Trade trade);
         Task<int> DeleteTrade(int id);
         Task<int> UpdateTrade(Trade trade);
     }

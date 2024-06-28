@@ -42,7 +42,7 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A trade with this ID already exists.");
             }
 
-            await _tradeService.AddTrade(trade);
+            await _tradeService.CreateTrade(trade);
 
             return Created($"trade/{trade.TradeId}", trade);
         }

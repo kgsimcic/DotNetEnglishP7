@@ -7,10 +7,10 @@ namespace WebApi.Services
 {
     public interface IRuleService
     {
-        RuleName[] GetAllRules();
-        Task<RuleName> GetRule(int id);
-        Task<RuleName> CreateRule(RuleName ruleName);
+        Rule[] GetAllRules();
+        Task<Rule> GetRule(int id);
+        Task<Rule> CreateRule(Rule ruleName);
         Task<int> DeleteRule(int id);
-        Task<int> UpdateRule(RuleName ruleName);
+        Task<int> UpdateRule(Rule ruleName);
     }
 }

@@ -26,7 +26,7 @@ namespace WebApi.Services
 
         public void CreateCurvePoint(CurvePoint curvePoint)
         {
-            _curvePointRepository.Add(curvePoint);
+            _curvePointRepository.Create(curvePoint);
         }
 
         public void DeleteCurvePoint(int id)

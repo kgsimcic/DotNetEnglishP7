@@ -48,7 +48,7 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A bid with this ID already exists.");
             }
 
-            await _bidService.AddBid(bid);
+            await _bidService.CreateBid(bid);
 
             return Created($"bid/{bid.BidListId}", bid);
         }

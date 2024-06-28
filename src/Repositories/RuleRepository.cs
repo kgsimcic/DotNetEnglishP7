@@ -17,19 +17,19 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public async Task<RuleName> FindById(int id)
+        public async Task<Rule> FindById(int id)
         {
             return await DbContext.Rules.ToAsyncEnumerable()
                 .Where(ruleName => ruleName.Id == id)
                                   .FirstOrDefault();
         }
 
-        public RuleName[] FindAll()
+        public Rule[] FindAll()
         {
             return DbContext.Rules.ToArray();
         }
 
-        public async Task<RuleName> Add(RuleName ruleName)
+        public async Task<Rule> Create(Rule ruleName)
         {
             DbContext.Rules.Add(ruleName);
             await DbContext.SaveChangesAsync();

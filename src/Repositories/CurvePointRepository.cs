@@ -29,7 +29,7 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.CurvePoints.ToArray();
         }
 
-        public async Task<CurvePoint> Add(CurvePoint curvePoint)
+        public async Task<CurvePoint> Create(CurvePoint curvePoint)
         {
             DbContext.CurvePoints.Add(curvePoint);
             await DbContext.SaveChangesAsync();

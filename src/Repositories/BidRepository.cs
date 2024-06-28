@@ -17,23 +17,23 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public BidList FindById(int id)
+        public Bid FindById(int id)
         {
             return DbContext.Bids.Where(bidList => bidList.BidListId == id)
                                   .FirstOrDefault();
         }
 
-        public BidList[] FindAll()
+        public Bid[] FindAll()
         {
             return DbContext.Bids.ToArray();
         }
 
-        public void Add(BidList bidList)
+        public void Create(Bid bidList)
         {
             DbContext.Bids.Add(bidList);
         }
 
-        public void Update(BidList bidList)
+        public void Update(Bid bidList)
         {
             DbContext.Bids.Update(bidList);
         }

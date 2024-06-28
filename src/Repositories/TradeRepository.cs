@@ -28,7 +28,7 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.Trades.ToArray();
         }
 
-        public async Task<Trade> Add(Trade trade)
+        public async Task<Trade> Create(Trade trade)
         {
             DbContext.Trades.Add(trade);
             await DbContext.SaveChangesAsync();

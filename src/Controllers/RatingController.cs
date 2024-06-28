@@ -41,7 +41,7 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A rating with this ID already exists.");
             }
 
-            await _ratingService.AddRating(rating);
+            await _ratingService.CreateRating(rating);
             return Created($"ratings/{rating.Id}", rating);
         }
 
