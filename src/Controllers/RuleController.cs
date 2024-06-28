@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dot.Net.WebApi.Domain;
@@ -23,7 +24,6 @@ namespace Dot.Net.WebApi.Controllers
         [HttpGet("/ruleName/list")]
         public IActionResult Home()
         {
-            // TODO: find all RuleName, add to model
             var result = _ruleService.GetAllRules().ToList();
             if (result is null)
             {
@@ -32,16 +32,22 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(result);
         }
 
-        [HttpPost("/ruleName/add")]
-        public async Task<ActionResult> AddRuleName([FromBody]Rule rule)
+        [HttpPost("/rules")]
+        public async Task<ActionResult> CreateRule([FromBody]Rule rule)
         {
-            if (!Validate(rule))
+            if (rule == null)
             {
-                return BadRequest(ModelState.IsValid);
+                return BadRequest("Rule cannot be null.");
             }
-            await _ruleService.CreateRule(rule);
 
-            return Created();
+            var existingRule = _ruleService.GetRule(rule.Id);
+            if (existingRule != null)
+            {
+                return Conflict("A rule with this ID already exists.");
+            }
+
+            await _ruleService.CreateRule(rule);
+            return Created($"rule/{rule.Id}", rule);
         }
 
         public bool Validate([FromBody]Rule ruleName)

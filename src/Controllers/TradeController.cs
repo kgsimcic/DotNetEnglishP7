@@ -14,7 +14,6 @@ namespace Dot.Net.WebApi.Controllers
     [ApiController]
     public class TradeController : Controller
     {
-        // TODO: Inject Trade service
         private readonly ITradeService _tradeService;
 
         public TradeController(ITradeService tradeService)
@@ -22,23 +21,30 @@ namespace Dot.Net.WebApi.Controllers
             _tradeService = tradeService;
         }
 
-        [HttpGet("/trade/list")]
+        [HttpGet("/trades")]
         public IActionResult GetAllTrades()
         {
             return Ok(_tradeService.GetAllTrades().ToList());
         }
 
-        [HttpPost("/trade/add")]
-        public async Task<ActionResult> AddTrade([FromBody]Trade trade)
+        [HttpPost("/trades")]
+        public async Task<ActionResult> CreateTrade([FromBody]Trade trade)
         {
-            if (!Validate(trade))
+            if (trade == null)
             {
-                return BadRequest(ModelState);
+                return BadRequest("Trade cannot be null.");
             }
 
-            var createdTrade = await _tradeService.AddTrade(trade);
+            // Check if a user with the same ID already exists
+            var existingTrade = _tradeService.GetTrade(trade.TradeId);
+            if (existingTrade != null)
+            {
+                return Conflict("A trade with this ID already exists.");
+            }
 
-            return Created($"/trade/{trade.TradeId}", createdTrade);
+            await _tradeService.AddTrade(trade);
+
+            return Created($"trade/{trade.TradeId}", trade);
         }
 
         public bool Validate([FromBody]Trade trade)

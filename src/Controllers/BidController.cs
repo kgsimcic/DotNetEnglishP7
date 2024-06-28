@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dot.Net.WebApi.Domain;
@@ -14,10 +15,11 @@ namespace Dot.Net.WebApi.Controllers
     {
         private readonly IBidService _bidService;
 
-        [HttpGet("/bid/list")]
+        [HttpGet("/bids")]
         public IActionResult Home()
         {
-            return View("Home");
+            var bids = _bidService.GetAllBids().ToList();
+            return Ok(bids);
         }
 
         [HttpGet("/bid/validate")]
@@ -32,6 +34,24 @@ namespace Dot.Net.WebApi.Controllers
             return View("bidList/update");
         }*/
 
+        [HttpPost("/bids")]
+        public async Task<ActionResult> CreateBid([FromBody] Bid bid)
+        {
+            if (bid == null)
+            {
+                return BadRequest("Bid cannot be null.");
+            }
+
+            var existingBid = _bidService.GetBid(bid.BidListId);
+            if (existingBid != null)
+            {
+                return Conflict("A bid with this ID already exists.");
+            }
+
+            await _bidService.AddBid(bid);
+
+            return Created($"bid/{bid.BidListId}", bid);
+        }
         [HttpPut("/bid/update/{id}")]
         public async Task<ActionResult> UpdateBid(int id, [FromBody] Bid bid)
         {

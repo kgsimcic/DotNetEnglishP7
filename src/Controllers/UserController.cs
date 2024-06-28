@@ -62,7 +62,7 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A user with this username already exists.");
             }
 
-            await _userService.AddUser(user);
+            await _userService.CreateUser(user);
 
             return Created($"user/{user.Id}", user);
         }

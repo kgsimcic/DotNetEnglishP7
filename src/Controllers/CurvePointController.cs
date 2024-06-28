@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dot.Net.WebApi.Domain;
@@ -20,21 +21,32 @@ namespace Dot.Net.WebApi.Controllers
             _curvePointService = curvePointService;
         }
 
-        [HttpGet("/curvePoint/list")]
+        [HttpGet("/curvePoints")]
         public IActionResult Home()
         {
             var curvePoints = _curvePointService.GetAllCurvePoints().ToList();
             return Ok(curvePoints);
         }
 
-        [HttpGet("/curvePoint/add")]
-        public async Task<ActionResult> AddCurvePoint([FromBody]CurvePoint curvePoint)
+        [HttpPost("/curvePoints")]
+        public async Task<ActionResult> CreateCurvePoint([FromBody]CurvePoint curvePoint)
         {
+            if (curvePoint == null)
+            {
+                return BadRequest("Curve point cannot be null.");
+            }
 
-            return 1;
+            var existingCurvePoint = _curvePointService.GetCurvePoint(curvePoint.Id);
+            if (existingCurvePoint != null)
+            {
+                return Conflict("A curve point with this ID already exists.");
+            }
+
+            await _curvePointService.CreateCurvePoint(curvePoint);
+            return Created($"curvePoints/{curvePoint.Id}", curvePoint);
         }
 
-        [HttpGet("/curvePoint/add")]
+        [HttpGet("/curvePoint")]
         public bool Validate([FromBody]CurvePoint curvePoint)
         {
             return ModelState.IsValid;
@@ -47,7 +59,7 @@ namespace Dot.Net.WebApi.Controllers
             return View("curvepoint/update");
         }*/
 
-        [HttpPost("/curvepoint/update/{id}")]
+        [HttpPut("/curvepoints/{id}")]
         public IActionResult UpdateCurvePoint(int id, [FromBody] CurvePoint curvePoint)
         {
             if (curvePoint == null) { return BadRequest("User cannot be null."); }

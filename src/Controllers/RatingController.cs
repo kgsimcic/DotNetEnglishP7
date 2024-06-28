@@ -1,30 +1,48 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
- 
+using WebApi.Services;
+
 namespace Dot.Net.WebApi.Controllers
 {
     [Route("[controller]")]
     public class RatingController : Controller
     {
-        // TODO: Inject Rating service
+        private readonly IRatingService _ratingService;
 
-        [HttpGet("/rating/list")]
-        public IActionResult Home()
+        public RatingController(IRatingService ratingService)
         {
-            // TODO: find all Rating, add to model
-            return View("rating/list");
+            _ratingService = ratingService;
         }
 
-        [HttpGet("/rating/add")]
-        public IActionResult AddRatingForm([FromBody]Rating rating)
+        [HttpGet("/ratings")]
+        public IActionResult Home()
         {
-            return View("rating/add");
+            return Ok(_ratingService.GetAllRatings().ToList());
+        }
+
+        [HttpPost("/ratings")]
+        public async Task<ActionResult> CreateRating([FromBody]Rating rating)
+        {
+            if (rating == null)
+            {
+                return BadRequest("Rating cannot be null.");
+            }
+
+            var existingRating = _ratingService.GetRating(rating.Id);
+            if (existingRating != null)
+            {
+                return Conflict("A rating with this ID already exists.");
+            }
+
+            await _ratingService.AddRating(rating);
+            return Created($"ratings/{rating.Id}", rating);
         }
 
         public bool Validate([FromBody]Rating rating)
@@ -32,12 +50,12 @@ namespace Dot.Net.WebApi.Controllers
             return ModelState.IsValid;
         }
 
-        [HttpGet("/rating/update/{id}")]
+        /*[HttpGet("/rating/update/{id}")]
         public IActionResult ShowUpdateForm(int id)
         {
             // TODO: get Rating by Id and to model then show to the form
             return View("rating/update");
-        }
+        }*/
 
         [HttpPost("/rating/update/{id}")]
         public async Task<ActionResult> updateRating(int id, [FromBody] Rating rating)
