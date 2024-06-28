@@ -27,6 +27,18 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(_tradeService.GetAllTrades().ToList());
         }
 
+        [HttpGet("/trades/{id}")]
+        public async Task<ActionResult<Trade>> GetTradeById(int id)
+        {
+            var trade = await _tradeService.GetTrade(id);
+
+            if (trade == null)
+            {
+                return NotFound();
+            }
+            return Ok(trade);
+        }
+
         [HttpPost("/trades")]
         public async Task<ActionResult> CreateTrade([FromBody]Trade trade)
         {
@@ -59,7 +71,7 @@ namespace Dot.Net.WebApi.Controllers
             return View("trade/update");
         }*/
 
-        [HttpPut("/trade/update/{id}")]
+        [HttpPut("/trades/{id}")]
         public async Task<ActionResult> UpdateTrade(int id, [FromBody] Trade trade)
         {
             if (trade == null) { return BadRequest("Trade cannot be null."); }
@@ -77,7 +89,7 @@ namespace Dot.Net.WebApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("/trade/{id}")]
+        [HttpDelete("/trades/{id}")]
         public async Task<ActionResult> DeleteTrade(int id)
         {
 

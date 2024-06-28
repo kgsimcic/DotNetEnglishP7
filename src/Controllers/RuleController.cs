@@ -21,7 +21,7 @@ namespace Dot.Net.WebApi.Controllers
             _ruleService = ruleService;
         }
 
-        [HttpGet("/ruleName/list")]
+        [HttpGet("/rules")]
         public IActionResult Home()
         {
             var result = _ruleService.GetAllRules().ToList();
@@ -30,6 +30,17 @@ namespace Dot.Net.WebApi.Controllers
                 return NoContent();
             }
             return Ok(result);
+        }
+
+        [HttpGet("rules/{id}")]
+        public async Task<ActionResult<Rule>> GetRuleById(int id)
+        {
+            var rule = await _ruleService.GetRule(id);
+            if (rule == null)
+            {
+                return NotFound();
+            }
+            return Ok(rule);
         }
 
         [HttpPost("/rules")]
@@ -62,7 +73,7 @@ namespace Dot.Net.WebApi.Controllers
             return View("ruleName/update");
         }*/
 
-        [HttpPut("/ruleName/update/{id}")]
+        [HttpPut("/rules/{id}")]
         public async Task<ActionResult> UpdateRule(int id, [FromBody] Rule rule)
         {
             if (rule == null) { return BadRequest("Rule cannot be null."); }
@@ -80,7 +91,7 @@ namespace Dot.Net.WebApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("/rule/{id}")]
+        [HttpDelete("/rules/{id}")]
         public async Task<ActionResult> DeleteRule(int id)
         {
             try

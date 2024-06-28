@@ -30,7 +30,7 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(users);
         }
 
-        [HttpGet("/user/{userName}")]
+        [HttpGet("/users/{userName}")]
         public async Task<ActionResult<User>> GetUserByUserName(string userName)
         {
             var user = await _userService.GetUserByName(userName);
@@ -83,7 +83,7 @@ namespace Dot.Net.WebApi.Controllers
         //    return View("user/update");
         //}
 
-        [HttpPut("/user/update/{id}")]
+        [HttpPut("/users/{id}")]
         public async Task<ActionResult> UpdateUser(int id, [FromBody] User user)
         {
             if (user == null) { return BadRequest("User cannot be null."); }
@@ -102,7 +102,7 @@ namespace Dot.Net.WebApi.Controllers
 
         }
 
-        [HttpDelete("/user/{id}")]
+        [HttpDelete("/users/{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
             try

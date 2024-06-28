@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -21,14 +22,26 @@ namespace Dot.Net.WebApi.Controllers
             _curvePointService = curvePointService;
         }
 
-        [HttpGet("/curvePoints")]
+        [HttpGet("/curvepoints")]
         public IActionResult Home()
         {
             var curvePoints = _curvePointService.GetAllCurvePoints().ToList();
             return Ok(curvePoints);
         }
 
-        [HttpPost("/curvePoints")]
+        [HttpGet("/curvepoints/{id}")]
+        public async Task<ActionResult<CurvePoint>> GetCurvePointById(int id)
+        {
+            var curvePoint = await _curvePointService.GetCurvePoint(id);
+
+            if (curvePoint == null)
+            {
+                return NotFound();
+            }
+            return Ok(curvePoint);
+        }
+
+        [HttpPost("/curvepoints")]
         public async Task<ActionResult> CreateCurvePoint([FromBody]CurvePoint curvePoint)
         {
             if (curvePoint == null)
@@ -46,7 +59,6 @@ namespace Dot.Net.WebApi.Controllers
             return Created($"curvePoints/{curvePoint.Id}", curvePoint);
         }
 
-        [HttpGet("/curvePoint")]
         public bool Validate([FromBody]CurvePoint curvePoint)
         {
             return ModelState.IsValid;
@@ -77,7 +89,7 @@ namespace Dot.Net.WebApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("/curvepoint/{id}")]
+        [HttpDelete("/curvepoints/{id}")]
         public async Task<ActionResult> DeleteCurvePoint(int id)
         {
             try

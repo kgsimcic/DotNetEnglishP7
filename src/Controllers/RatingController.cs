@@ -27,6 +27,18 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(_ratingService.GetAllRatings().ToList());
         }
 
+        [HttpGet("/ratings/{id}")]
+        public async Task<ActionResult<Rating>> GetRatingById(int id)
+        {
+            var rating = await _ratingService.GetRating(id);
+
+            if (rating == null)
+            {
+                return NotFound();
+            }
+            return Ok(rating);
+        }
+
         [HttpPost("/ratings")]
         public async Task<ActionResult> CreateRating([FromBody]Rating rating)
         {
@@ -57,7 +69,7 @@ namespace Dot.Net.WebApi.Controllers
             return View("rating/update");
         }*/
 
-        [HttpPost("/rating/update/{id}")]
+        [HttpPut("/ratings/{id}")]
         public async Task<ActionResult> updateRating(int id, [FromBody] Rating rating)
         {
             if (rating == null) { return BadRequest("Rating cannot be null."); }

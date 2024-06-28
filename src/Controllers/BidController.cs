@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -22,7 +23,18 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(bids);
         }
 
-        [HttpGet("/bid/validate")]
+        [HttpGet("/bids/{id}")]
+        public async Task<ActionResult<Bid>> GetBidById(int id)
+        {
+            var bid = await _bidService.GetBid(id);
+
+            if (bid == null)
+            {
+                return NotFound();
+            }
+            return Ok(bid);
+        }
+
         public bool Validate([FromBody]Bid bidList)
         {
             return ModelState.IsValid;
@@ -52,7 +64,8 @@ namespace Dot.Net.WebApi.Controllers
 
             return Created($"bid/{bid.BidListId}", bid);
         }
-        [HttpPut("/bid/update/{id}")]
+
+        [HttpPut("/bids/{id}")]
         public async Task<ActionResult> UpdateBid(int id, [FromBody] Bid bid)
         {
             if (bid == null) { return BadRequest("Bid cannot be null."); }
@@ -67,10 +80,11 @@ namespace Dot.Net.WebApi.Controllers
             {
                 return NotFound();
             }
+
             return NoContent();
         }
 
-        [HttpDelete("/bid/{id}")]
+        [HttpDelete("/bids/{id}")]
         public async Task<ActionResult> DeleteBid(int id)
         {
             try
