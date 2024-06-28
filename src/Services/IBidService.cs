@@ -7,10 +7,10 @@ namespace WebApi.Services
 {
     public interface IBidService
     {
-        BidList[] GetAllBids();
-        BidList GetBid(int id);
-        void CreateBid(BidList bidList);
+        Bid[] GetAllBids();
+        Bid GetBid(int id);
+        void CreateBid(Bid bidList);
         void DeleteBid(int id);
-        void UpdateBid(BidList bidList);
+        void UpdateBid(Bid bidList);
     }
 }

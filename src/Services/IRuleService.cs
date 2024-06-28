@@ -1,15 +1,16 @@
 ﻿using Dot.Net.WebApi.Controllers;
 using Dot.Net.WebApi.Domain;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace WebApi.Services
 {
     public interface IRuleService
     {
         RuleName[] GetAllRules();
-        RuleName GetRule(int id);
-        void CreateRule(RuleName ruleName);
-        void DeleteRule(int id);
-        void UpdateRule(RuleName ruleName);
+        Task<RuleName> GetRule(int id);
+        Task<RuleName> CreateRule(RuleName ruleName);
+        Task<int> DeleteRule(int id);
+        Task<int> UpdateRule(RuleName ruleName);
     }
 }

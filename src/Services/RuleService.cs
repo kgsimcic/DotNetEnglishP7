@@ -1,7 +1,9 @@
 ﻿using Dot.Net.WebApi.Controllers;
 using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace WebApi.Services
 {
@@ -18,24 +20,25 @@ namespace WebApi.Services
             return _ruleRepository.FindAll();
         }
 
-        public RuleName GetRule(int id)
+        public async Task<RuleName> GetRule(int id)
         {
-            return _ruleRepository.FindById(id);
+            return await _ruleRepository.FindById(id);
         }
 
-        public void CreateRule(RuleName rule)
+        public async Task<RuleName> CreateRule(RuleName rule)
         {
-            _ruleRepository.Add(rule);
+            await _ruleRepository.Add(rule);
+            return rule;
         }
 
-        public void DeleteRule(int id)
+        public async Task<int> DeleteRule(int id)
         {
-            _ruleRepository.Delete(id);
+            return await _ruleRepository.Delete(id);
         }
 
-        public void UpdateRule(RuleName rule)
+        public async Task<int> UpdateRule(RuleName rule)
         {
-            _ruleRepository.Update(rule);
+            return await _ruleRepository.Update(rule);
         }
     }
 }

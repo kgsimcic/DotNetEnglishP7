@@ -14,17 +14,17 @@ namespace WebApi.Services
             _bidRepository = bidRepository;
         }
 
-        public BidList[] GetAllBids()
+        public Bid[] GetAllBids()
         {
             return _bidRepository.FindAll();
         }
 
-        public BidList GetBid(int id)
+        public Bid GetBid(int id)
         {
             return _bidRepository.FindById(id);
         }
 
-        public void CreateBid(BidList bidList)
+        public void CreateBid(Bid bidList)
         {
             _bidRepository.Add(bidList);
         }
@@ -34,7 +34,7 @@ namespace WebApi.Services
             _bidRepository.Delete(id);
         }
 
-        public void UpdateBid(BidList bidList)
+        public void UpdateBid(Bid bidList)
         {
             _bidRepository.Update(bidList);
         }

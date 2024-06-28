@@ -1,6 +1,7 @@
 ﻿using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace WebApi.Services
 {
@@ -17,24 +18,24 @@ namespace WebApi.Services
             return _tradeRepository.FindAll();
         }
 
-        public Trade GetTrade(int id)
+        public async Task<Trade> GetTrade(int id)
         {
-            return _tradeRepository.FindById(id);
+            return await _tradeRepository.FindById(id);
         }
 
-        public void CreateTrade(Trade trade)
+        public async Task<Trade> CreateTrade(Trade trade)
         {
-            _tradeRepository.Add(trade);
+            return await _tradeRepository.Add(trade);
         }
 
-        public void DeleteTrade(int id)
+        public async Task<int> DeleteTrade(int id)
         {
-            _tradeRepository.Delete(id);
+            return await _tradeRepository.Delete(id);
         }
 
-        public void UpdateTrade(Trade trade)
+        public async Task<int> UpdateTrade(Trade trade)
         {
-            _tradeRepository.Update(trade);
+            return await _tradeRepository.Update(trade);
         }
     }
 }

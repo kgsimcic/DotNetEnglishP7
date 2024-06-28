@@ -1,6 +1,7 @@
 ﻿using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace WebApi.Services
 {
@@ -17,28 +18,28 @@ namespace WebApi.Services
             return _userRepository.FindAll();
         }
 
-        public User GetUserByName(string userName)
+        public async Task<User> GetUserByName(string userName)
         {
-            return _userRepository.FindByUserName(userName);
+            return await _userRepository.FindByUserName(userName);
         }
 
-        public void AddUser(User user)
+        public async Task<User> AddUser(User user)
         {
-            _userRepository.Add(user);
+            return await _userRepository.Add(user);
         }
-        public void UpdateUser(User user)
+        public async Task<int> UpdateUser(User user)
         {
-            _userRepository.Update(user);
-        }
-
-        public void DeleteUser(int id)
-        {
-            _userRepository.Delete(id);
+            return await _userRepository.Update(user);
         }
 
-        public User GetUserById(int id)
+        public async Task<int> DeleteUser(int id)
         {
-            _userRepository.FindById(id);
+            return await _userRepository.Delete(id);
+        }
+
+        public async Task<User> GetUserById(int id)
+        {
+            return await _userRepository.FindById(id);
         }
     }
 }
