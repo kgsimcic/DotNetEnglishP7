@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using WebApi.Services;
 
@@ -14,7 +15,7 @@ namespace Dot.Net.WebApi.Controllers
     [ApiController]
     public class UserController : Controller
     {
-        private IUserService _userService;
+        private readonly IUserService _userService;
 
         public UserController(IUserService userService)
         {
@@ -29,7 +30,7 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/users/{userName}")]
-        public async Task<ActionResult<User>> GetUserByUserName(string userName)
+        public async Task<ActionResult> GetUserByUserName(string userName)
         {
             var user = await _userService.GetUserByName(userName);
 
@@ -40,23 +41,31 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpPost("/users")]
-        public async Task<ActionResult<User>> CreateUser([FromBody]User user)
+        public async Task<ActionResult> CreateUser([FromBody]User user)
         {
+
             if (user == null)
             {
                 return BadRequest("User cannot be null.");
             }
+            if (!Validate(user))
+            {
+                Console.WriteLine(ModelState.ErrorCount);
+                return BadRequest(ModelState);
+            }
 
             // Check if a user with the same ID already exists
-            var existingUser = _userService.GetUserById(user.Id);
+            var existingUser = await _userService.GetUserById(user.Id);
             if (existingUser != null)
             {
+                Console.WriteLine("Id exists");
                 return Conflict("A user with this ID already exists.");
             }
             // Check if a user with the same username already exists
-            existingUser = _userService.GetUserByName(user.UserName);
+            existingUser = await _userService.GetUserByName(user.UserName);
             if (existingUser != null)
             {
+                Console.WriteLine("Username exists");
                 return Conflict("A user with this username already exists.");
             }
 
