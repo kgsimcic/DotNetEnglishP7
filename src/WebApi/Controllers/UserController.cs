@@ -7,7 +7,7 @@ using Dot.Net.WebApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
-using WebApi.Services;
+using Dot.Net.WebApi.Services;
 
 namespace Dot.Net.WebApi.Controllers
 {
@@ -73,22 +73,6 @@ namespace Dot.Net.WebApi.Controllers
 
             return Created($"user/{user.Id}", user);
         }
-
-        public bool Validate([FromBody]User user)
-        {
-            return ModelState.IsValid;
-        }
-        
-        //[HttpGet("/user/update/{id}")]
-        //public IActionResult ShowUpdateForm(int id)
-        //{
-        //    User user = _userRepository.FindById(id);
-            
-        //    if (user == null)
-        //        throw new ArgumentException("Invalid user Id:" + id);
-            
-        //    return View("user/update");
-        //}
 
         [HttpPut("/users/{id}")]
         public async Task<ActionResult> UpdateUser(int id, [FromBody] User user)

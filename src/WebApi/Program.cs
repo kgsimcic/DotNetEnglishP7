@@ -10,7 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using Dot.Net.WebApi.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Dot.Net.WebApi.Data;
-using WebApi.Services;
+using Dot.Net.WebApi.Services;
+using Dot.Net.WebApi.Repositories;
 
 namespace Dot.Net.WebApi
 {

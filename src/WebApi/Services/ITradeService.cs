@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Threading.Tasks;
 
-namespace WebApi.Services
+namespace Dot.Net.WebApi.Services
 {
     public interface ITradeService
     {

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebApi.Services;
+using Dot.Net.WebApi.Services;
 using System.Diagnostics;
 
 namespace Dot.Net.WebApi.Controllers

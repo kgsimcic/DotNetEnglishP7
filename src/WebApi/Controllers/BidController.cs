@@ -7,14 +7,22 @@ using Dot.Net.WebApi.Controllers.Domain;
 using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using WebApi.Services;
+using Dot.Net.WebApi.Services;
 
 namespace Dot.Net.WebApi.Controllers
 {
+
+    
     [Route("[controller]")]
     public class BidController : Controller
     {
+
         private readonly IBidService _bidService;
+
+        public BidController(IBidService bidService)
+        {
+            _bidService = bidService;
+        }
 
         [HttpGet("/bids")]
         public IActionResult Home()
