@@ -10,47 +10,51 @@ namespace Dot.Net.WebApi.Services
 {
     public class RatingService : IRatingService
     {
-
-        private readonly RatingRepository _ratingRepository;
-        public RatingService(RatingRepository ratingRepository) {
+        protected IRepository<Rating> _ratingRepository { get; }
+        public RatingService(IRepository<Rating> ratingRepository)
+        {
             _ratingRepository = ratingRepository;
         }
 
         public Rating[] GetAllRatings()
         {
-            return _ratingRepository.FindAll();
+            return _ratingRepository.GetAll();
         }
-
-        public async Task<Rating> GetRating(int id)
+# nullable enable
+        public Rating? GetRating(int id)
         {
-            return await _ratingRepository.FindById(id);
+            return _ratingRepository.GetById(id);
         }
+# nullable disable
 
         public async Task<int> CreateRating(Rating rating)
         {
-            return await _ratingRepository.Create(rating);
+            _ratingRepository.Add(rating);
+            return await _ratingRepository.SaveChangesAsync();
         }
 
         public async Task<int> DeleteRating(int id)
         {
-            var existingRating = _ratingRepository.FindById(id);
+            var existingRating = _ratingRepository.GetById(id);
             if (existingRating == null)
             {
                 throw new KeyNotFoundException("Rating not found.");
             }
 
-            return await _ratingRepository.Delete(id);
+            _ratingRepository.Delete(existingRating);
+            return await _ratingRepository.SaveChangesAsync();
         }
 
         public async Task<int> UpdateRating(int id, Rating rating)
         {
-            var existingRating = _ratingRepository.FindById(id);
+            var existingRating = _ratingRepository.GetById(id);
             if (existingRating == null)
             {
                 throw new KeyNotFoundException("Rating not found.");
             }
 
-            return await _ratingRepository.Update(rating);
+            _ratingRepository.Update(rating);
+            return await _ratingRepository.SaveChangesAsync();
         }
     }
 }

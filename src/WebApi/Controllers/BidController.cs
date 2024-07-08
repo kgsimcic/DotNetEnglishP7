@@ -32,9 +32,9 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/bids/{id}")]
-        public async Task<ActionResult<Bid>> GetBidById(int id)
+        public ActionResult<Bid> GetBidById(int id)
         {
-            var bid = await _bidService.GetBid(id);
+            var bid = _bidService.GetBid(id);
 
             if (bid == null)
             {

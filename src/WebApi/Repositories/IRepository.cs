@@ -8,7 +8,9 @@ namespace Dot.Net.WebApi.Repositories
         where TEntity : class
     {
         TEntity[] GetAll();
+# nullable enable
         TEntity? GetById(int id);
+# nullable disable
         void Add(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);

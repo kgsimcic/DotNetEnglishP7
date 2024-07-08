@@ -26,6 +26,7 @@ namespace Dot.Net.WebApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.AddScoped<IRepository<User>, Repository<User>>();
                     services.AddScoped<IUserService, UserService>();
                     string connString = hostContext.Configuration.GetConnectionString("DefaultConnection");
                     services.AddDbContext<LocalDbContext>(options =>

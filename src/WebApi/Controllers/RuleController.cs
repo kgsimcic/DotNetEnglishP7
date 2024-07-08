@@ -33,9 +33,9 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("rules/{id}")]
-        public async Task<ActionResult<Rule>> GetRuleById(int id)
+        public ActionResult<Rule> GetRuleById(int id)
         {
-            var rule = await _ruleService.GetRule(id);
+            var rule = _ruleService.GetRule(id);
             if (rule == null)
             {
                 return NotFound();

@@ -10,47 +10,51 @@ namespace Dot.Net.WebApi.Services
 {
     public class CurvePointService : ICurvePointService
     {
-
-        private readonly CurvePointRepository _curvePointRepository;
-        public CurvePointService(CurvePointRepository curvePointRepository) {
+        protected IRepository<CurvePoint> _curvePointRepository { get; }
+        public CurvePointService(IRepository<CurvePoint> curvePointRepository)
+        {
             _curvePointRepository = curvePointRepository;
         }
 
         public CurvePoint[] GetAllCurvePoints()
         {
-            return _curvePointRepository.FindAll();
+            return _curvePointRepository.GetAll();
         }
-
-        public async Task<CurvePoint> GetCurvePoint(int id)
+# nullable enable
+        public CurvePoint? GetCurvePoint(int id)
         {
-            return await _curvePointRepository.FindById(id);
+            return _curvePointRepository.GetById(id);
         }
+# nullable disable
 
         public async Task<int> CreateCurvePoint(CurvePoint curvePoint)
         {
-            return await _curvePointRepository.Create(curvePoint);
+            _curvePointRepository.Add(curvePoint);
+            return await _curvePointRepository.SaveChangesAsync();
         }
 
         public async Task<int> DeleteCurvePoint(int id)
         {
-            var existingCurvePoint = _curvePointRepository.FindById(id);
+            var existingCurvePoint = _curvePointRepository.GetById(id);
             if (existingCurvePoint == null)
             {
                 throw new KeyNotFoundException("Curve point not found.");
             }
 
-            return await _curvePointRepository.Delete(id);
+            _curvePointRepository.Delete(existingCurvePoint);
+            return await _curvePointRepository.SaveChangesAsync();
         }
 
         public async Task<int> UpdateCurvePoint(int id, CurvePoint curvePoint)
         {
-            var existingCurvePoint = _curvePointRepository.FindById(id);
+            var existingCurvePoint = _curvePointRepository.GetById(id);
             if (existingCurvePoint == null)
             {
                 throw new KeyNotFoundException("Curve point not found.");
             }
 
-            return await _curvePointRepository.Update(curvePoint);
+            _curvePointRepository.Update(curvePoint);
+            return await _curvePointRepository.SaveChangesAsync();
         }
     }
 }

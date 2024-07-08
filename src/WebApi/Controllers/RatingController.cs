@@ -28,9 +28,9 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/ratings/{id}")]
-        public async Task<ActionResult<Rating>> GetRatingById(int id)
+        public ActionResult<Rating> GetRatingById(int id)
         {
-            var rating = await _ratingService.GetRating(id);
+            var rating = _ratingService.GetRating(id);
 
             if (rating == null)
             {

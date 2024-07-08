@@ -11,45 +11,50 @@ namespace  Dot.Net.WebApi.Services
     public class BidService : IBidService
     {
 
-        private readonly BidRepository _bidRepository;
-        public BidService(BidRepository bidRepository) {
+        protected IRepository<Bid> _bidRepository { get; }
+        public BidService(IRepository<Bid> bidRepository)
+        {
             _bidRepository = bidRepository;
         }
 
         public Bid[] GetAllBids()
         {
-            return _bidRepository.FindAll();
+            return _bidRepository.GetAll();
         }
-
-        public async Task<Bid> GetBid(int id)
+# nullable enable
+        public Bid? GetBid(int id)
         {
-            return await _bidRepository.FindById(id);
+            return _bidRepository.GetById(id);
         }
+# nullable disable
 
         public async Task<int> CreateBid(Bid bid)
         {
-            return await _bidRepository.Create(bid);
+            _bidRepository.Add(bid);
+            return await _bidRepository.SaveChangesAsync();
         }
 
         public async Task<int> DeleteBid(int id)
         {
-            var existingBid = _bidRepository.FindById(id);
+            var existingBid = _bidRepository.GetById(id);
             if (existingBid == null)
             {
                 throw new KeyNotFoundException("Bid not found.");
             }
 
-            return await _bidRepository.Delete(id);
+            _bidRepository.Delete(existingBid);
+            return await _bidRepository.SaveChangesAsync();
         }
 
         public async Task<int> UpdateBid(int id,Bid bid)
         {
-            var existingBid = _bidRepository.FindById(id);
+            var existingBid = _bidRepository.GetById(id);
             if (existingBid == null)
             {
                 throw new KeyNotFoundException("Bid not found.");
             }
-            return await _bidRepository.Update(bid);
+            _bidRepository.Update(bid);
+            return await _bidRepository.SaveChangesAsync();
         }
     }
 }

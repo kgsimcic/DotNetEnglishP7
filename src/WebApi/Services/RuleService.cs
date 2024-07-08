@@ -10,47 +10,51 @@ namespace Dot.Net.WebApi.Services
 {
     public class RuleService : IRuleService
     {
-
-        private readonly RuleRepository _ruleRepository;
-        public RuleService(RuleRepository ruleRepository) {
+        protected IRepository<Rule> _ruleRepository { get; }
+        public RuleService(IRepository<Rule> ruleRepository)
+        {
             _ruleRepository = ruleRepository;
         }
 
         public Rule[] GetAllRules()
         {
-            return _ruleRepository.FindAll();
+            return _ruleRepository.GetAll();
         }
-
-        public async Task<Rule> GetRule(int id)
+# nullable enable
+        public Rule? GetRule(int id)
         {
-            return await _ruleRepository.FindById(id);
+            return _ruleRepository.GetById(id);
         }
+# nullable disable
 
         public async Task<int> CreateRule(Rule rule)
         {
-            return await _ruleRepository.Create(rule);
+            _ruleRepository.Add(rule);
+            return await _ruleRepository.SaveChangesAsync();
         }
 
         public async Task<int> DeleteRule(int id)
         {
-            var existingRule = _ruleRepository.FindById(id);
+            var existingRule = _ruleRepository.GetById(id);
             if (existingRule == null)
             {
                 throw new KeyNotFoundException("Rule not found.");
             }
 
-            return await _ruleRepository.Delete(id);
+            _ruleRepository.Delete(existingRule);
+            return await _ruleRepository.SaveChangesAsync();
         }
 
         public async Task<int> UpdateRule(int id, Rule rule)
         {
-            var existingRule = _ruleRepository.FindById(id);
+            var existingRule = _ruleRepository.GetById(id);
             if (existingRule == null)
             {
                 throw new KeyNotFoundException("Rule not found.");
             }
 
-            return await _ruleRepository.Update(rule);
+            _ruleRepository.Update(rule);
+            return await _ruleRepository.SaveChangesAsync();
         }
     }
 }

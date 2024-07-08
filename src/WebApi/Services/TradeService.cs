@@ -1,5 +1,6 @@
 ﻿using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,47 +9,52 @@ namespace Dot.Net.WebApi.Services
 {
     public class TradeService : ITradeService
     {
-
-        private readonly TradeRepository _tradeRepository;
-        public TradeService(TradeRepository tradeRepository) {
+        protected IRepository<Trade> _tradeRepository { get; }
+        public TradeService(IRepository<Trade> tradeRepository)
+        {
             _tradeRepository = tradeRepository;
         }
 
         public Trade[] GetAllTrades()
         {
-            return _tradeRepository.FindAll();
+            return _tradeRepository.GetAll();
         }
 
-        public async Task<Trade> GetTrade(int id)
+# nullable enable
+        public Trade? GetTrade(int id)
         {
-            return await _tradeRepository.FindById(id);
+            return _tradeRepository.GetById(id);
         }
+# nullable disable
 
         public async Task<int> CreateTrade(Trade trade)
         {
-            return await _tradeRepository.Create(trade);
+            _tradeRepository.Add(trade);
+            return await _tradeRepository.SaveChangesAsync();
         }
 
         public async Task<int> DeleteTrade(int id)
         {
-            var existingTrade = _tradeRepository.FindById(id);
+            var existingTrade = _tradeRepository.GetById(id);
             if (existingTrade == null)
             {
                 throw new KeyNotFoundException("Trade not found.");
             }
 
-            return await _tradeRepository.Delete(id);
+            _tradeRepository.Delete(existingTrade);
+            return await _tradeRepository.SaveChangesAsync();
         }
 
         public async Task<int> UpdateTrade(int id, Trade trade)
         {
-            var existingTrade = _tradeRepository.FindById(id);
+            var existingTrade = _tradeRepository.GetById(id);
             if (existingTrade == null)
             {
                 throw new KeyNotFoundException("Trade not found.");
             }
 
-            return await _tradeRepository.Update(trade);
+            _tradeRepository.Update(trade);
+            return await _tradeRepository.SaveChangesAsync();
         }
     }
 }

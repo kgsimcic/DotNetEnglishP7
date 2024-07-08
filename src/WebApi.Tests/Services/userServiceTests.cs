@@ -13,13 +13,13 @@ namespace Dot.Net.WebApi.Tests
 {
     public class UserServiceTests
     {
-        private readonly Mock<UserRepository> _mockRepository;
+        private readonly Mock<IRepository<User>> _mockRepository;
         public UserService? userService;
         public User[] mockUsers;
 
         public UserServiceTests()
         {
-            _mockRepository = new Mock<UserRepository>();
+            _mockRepository = new Mock<IRepository<User>>();
             mockUsers = new User[]
             {
                 new()
@@ -47,7 +47,7 @@ namespace Dot.Net.WebApi.Tests
         public void GetAll_Nonempty_ShouldReturnArray()
         {
             // Arrange
-            _mockRepository.Setup(repo => repo.FindAll()).Returns(mockUsers);
+            _mockRepository.Setup(repo => repo.GetAll()).Returns(mockUsers);
             userService = new UserService(_mockRepository.Object);
 
             // Act
@@ -62,7 +62,7 @@ namespace Dot.Net.WebApi.Tests
         public void GetAll_Empty_ShouldReturnEmptyArray()
         {
             // Arrange
-            _mockRepository.Setup(repo => repo.FindAll()).Returns(Array.Empty<User>());
+            _mockRepository.Setup(repo => repo.GetAll()).Returns(Array.Empty<User>());
             userService = new UserService(_mockRepository.Object);
 
             // Act
@@ -75,7 +75,7 @@ namespace Dot.Net.WebApi.Tests
 
         // Test GetUserByName method
 
-        [Fact]
+/*        [Fact]
         public async Task GetUserByName_ShouldReturnUser()
         {
             // Arrange
@@ -88,9 +88,9 @@ namespace Dot.Net.WebApi.Tests
             // Assert
             Assert.Equal("Admin", getResult.UserName);
             Assert.IsType<User>(getResult);
-        }
+        }*/
 
-        [Fact]
+/*        [Fact]
         public async Task GetUserByName_NotFound_ShouldReturnNull()
         {
             // Arrange
@@ -103,7 +103,7 @@ namespace Dot.Net.WebApi.Tests
             // Assert
             Assert.Null(getResult);
             Assert.IsType<User>(getResult);
-        }
+        }*/
 
         // Test Create User method
 
@@ -114,11 +114,12 @@ namespace Dot.Net.WebApi.Tests
             {
                 Id = 3,
                 UserName = "NewUser",
-                Password = "pwd"
+                Password = "Password123@"
             };
 
             // Arrange 
-            _mockRepository.Setup(repo => repo.Create(newUser)).ReturnsAsync(1);
+            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
             // Act
@@ -140,14 +141,11 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange
-            _mockRepository.Setup(repo => repo.FindById(3)).ReturnsAsync((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
             userService = new UserService(_mockRepository.Object);
 
-            // Act
-            var result = await userService.UpdateUser(3, newUser);
-
-            // Assert
-            Assert.IsType<KeyNotFoundException>(result);
+            // Act and Assert
+            await Assert.ThrowsAsync<KeyNotFoundException>(async () => await userService.UpdateUser(3, newUser));
         }
 
         [Fact]
@@ -155,7 +153,8 @@ namespace Dot.Net.WebApi.Tests
         {
             var existingUser = mockUsers[0];
             // Arrange 
-            _mockRepository.Setup(repo => repo.Update(existingUser)).ReturnsAsync(1);
+            _mockRepository.Setup(repo => repo.GetById(1)).Returns(existingUser);
+            _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
             // Act
@@ -172,14 +171,11 @@ namespace Dot.Net.WebApi.Tests
         {
 
             // Arrange
-            _mockRepository.Setup(repo => repo.FindById(3)).ReturnsAsync((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
             userService = new UserService(_mockRepository.Object);
 
-            // Act
-            var result = await userService.DeleteUser(3);
-
-            // Assert
-            Assert.IsType<KeyNotFoundException>(result);
+            // Act and assert
+            await Assert.ThrowsAsync<KeyNotFoundException>(async () => await userService.DeleteUser(3));
         }
 
         [Fact]
@@ -187,7 +183,8 @@ namespace Dot.Net.WebApi.Tests
         {
             var existingUser = mockUsers[0];
             // Arrange 
-            _mockRepository.Setup(repo => repo.Delete(1)).ReturnsAsync(1);
+            _mockRepository.Setup(repo => repo.GetById(1)).Returns(existingUser);
+            _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
             // Act

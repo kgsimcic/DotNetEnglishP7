@@ -14,7 +14,6 @@ namespace Dot.Net.WebApi.Controllers
     [Route("[controller]")]
     public class CurvePointController : Controller
     {
-        // TODO: Inject Curve Point service
         private readonly ICurvePointService _curvePointService;
 
         CurvePointController(ICurvePointService curvePointService)
@@ -30,9 +29,9 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/curvepoints/{id}")]
-        public async Task<ActionResult<CurvePoint>> GetCurvePointById(int id)
+        public ActionResult<CurvePoint> GetCurvePointById(int id)
         {
-            var curvePoint = await _curvePointService.GetCurvePoint(id);
+            var curvePoint = _curvePointService.GetCurvePoint(id);
 
             if (curvePoint == null)
             {

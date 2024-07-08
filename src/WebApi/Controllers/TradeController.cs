@@ -28,9 +28,9 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/trades/{id}")]
-        public async Task<ActionResult<Trade>> GetTradeById(int id)
+        public ActionResult<Trade> GetTradeById(int id)
         {
-            var trade = await _tradeService.GetTrade(id);
+            var trade = _tradeService.GetTrade(id);
 
             if (trade == null)
             {
