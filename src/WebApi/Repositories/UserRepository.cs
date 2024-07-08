@@ -43,13 +43,7 @@ namespace Dot.Net.WebApi.Repositories
 
         public async Task<int> Update(User user)
         {
-            // check that the user exists before updating them.
-            var userToUpdate = DbContext.Users.Where(u => u.Id == user.Id).FirstOrDefault();
-            if (userToUpdate != null)
-            {
-                DbContext.Users.Update(user);
-            }
-
+            DbContext.Users.Update(user);
             return await DbContext.SaveChangesAsync();
         }
 
