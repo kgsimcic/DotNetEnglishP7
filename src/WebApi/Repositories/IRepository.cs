@@ -2,13 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace WebApi.Repositories
+namespace Dot.Net.WebApi.Repositories
 {
     public interface IRepository<TEntity>
         where TEntity : class
     {
         TEntity[] GetAll();
-        TEntity GetbyId(int id);
+        TEntity? GetById(int id);
         void Add(TEntity entity);
         void Update(TEntity entity);
         void Delete(TEntity entity);

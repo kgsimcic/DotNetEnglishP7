@@ -28,7 +28,7 @@ namespace Dot.Net.WebApi.Controllers
             var users = _userService.GetAllUsers().ToList();
             return Ok(users);
         }
-
+/*
         [HttpGet("/users/{userName}")]
         public async Task<ActionResult> GetUserByUserName(string userName)
         {
@@ -38,7 +38,7 @@ namespace Dot.Net.WebApi.Controllers
                 return NotFound();
             }
             return Ok(user);
-        }
+        }*/
 
         [HttpPost("/users")]
         public async Task<ActionResult> CreateUser([FromBody]User user)
@@ -48,26 +48,28 @@ namespace Dot.Net.WebApi.Controllers
             {
                 return BadRequest("User cannot be null.");
             }
-            if (!Validate(user))
+
+            /*if (!Validate(user))
             {
                 Console.WriteLine(ModelState.ErrorCount);
                 return BadRequest(ModelState);
-            }
+            }*/
 
             // Check if a user with the same ID already exists
-            var existingUser = await _userService.GetUserById(user.Id);
+            var existingUser = _userService.GetUserById(user.Id);
             if (existingUser != null)
             {
                 Console.WriteLine("Id exists");
                 return Conflict("A user with this ID already exists.");
             }
             // Check if a user with the same username already exists
-            existingUser = await _userService.GetUserByName(user.UserName);
+            
+            /*existingUser = await _userService.GetUserByName(user.UserName);
             if (existingUser != null)
             {
                 Console.WriteLine("Username exists");
                 return Conflict("A user with this username already exists.");
-            }
+            }*/
 
             await _userService.CreateUser(user);
 

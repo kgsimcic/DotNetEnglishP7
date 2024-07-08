@@ -4,14 +4,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Query;
+using System;
 
 namespace Dot.Net.WebApi.Services
 {
     public class UserService : IUserService
     {
 
-        private readonly UserRepository _userRepository;
-        public UserService(UserRepository userRepository) {
+        protected IRepository<User> _userRepository { get; }
+        public UserService(IRepository<User> userRepository) {
             _userRepository = userRepository;
         }
 
@@ -60,13 +62,13 @@ namespace Dot.Net.WebApi.Services
 
         public User[] GetAllUsers()
         {
-            return _userRepository.FindAll();
+            return _userRepository.GetAll();
         }
 
-        public async Task<User> GetUserByName(string userName)
+        /*public async Task<User> GetUserByName(string userName)
         {
             return await _userRepository.FindByUserName(userName);
-        }
+        }*/
 
         public async Task<int> CreateUser(User user)
         {
@@ -76,34 +78,42 @@ namespace Dot.Net.WebApi.Services
             {
                 return 0;
             }
-            return await _userRepository.Create(user);
+
+            _userRepository.Add(user);
+            return await _userRepository.SaveChangesAsync();
         }
         public async Task<int> UpdateUser(int id, User user)
         {
 
-            var existingUser = _userRepository.FindById(id);
+            var existingUser = _userRepository.GetById(id);
+            // Console.WriteLine(existingUser);
             if (existingUser == null)
             {
                 throw new KeyNotFoundException("User not found.");
             }
 
-            return await _userRepository.Update(user);
+            _userRepository.Update(user);
+            return await _userRepository.SaveChangesAsync();
         }
 
         public async Task<int> DeleteUser(int id)
         {
-            var existingUser = _userRepository.FindById(id);
+            var existingUser = _userRepository.GetById(id);
+            // Console.WriteLine(existingUser);
             if (existingUser == null)
             {
                 throw new KeyNotFoundException("User not found.");
             }
-
-            return await _userRepository.Delete(id);
+            
+            _userRepository.Delete(existingUser);
+            return await _userRepository.SaveChangesAsync();
         }
 
-        public async Task<User> GetUserById(int id)
+# nullable enable
+        public User? GetUserById(int id)
         {
-            return await _userRepository.FindById(id);
+            return _userRepository.GetById(id);
         }
+# nullable disable
     }
 }

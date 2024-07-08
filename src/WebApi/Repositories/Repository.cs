@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System.Threading;
+using Dot.Net.WebApi.Repositories;
 
 namespace Dot.Net.WebApi.Repositories
 {
@@ -20,10 +21,10 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        /*public async Task<User> FindByUserName(string userName)
+/*        public async Task<TEntity> FindByUserName(string userName)
         {
-            return await DbContext.Users.ToAsyncEnumerable()
-                .Where(user => user.UserName == userName)
+            return await Set().ToAsyncEnumerable()
+                .Where(entity => user.UserName == userName)
                                   .FirstOrDefaultAsync();
         }*/
 
@@ -32,11 +33,12 @@ namespace Dot.Net.WebApi.Repositories
             return Set().ToArray();
         }
 
+# nullable enable
         public TEntity? GetById(int id)
         {
             return Set().Find(id);
         }
-
+# nullable disable
         public void Add(TEntity entity)
         {
             Set().Add(entity);
@@ -57,10 +59,9 @@ namespace Dot.Net.WebApi.Repositories
             return DbContext.SaveChangesAsync(cancellationToken);
         }
 
-        protected DbSet<TEntity> Set()
+        public DbSet<TEntity> Set()
         {
-            return DbContext.Set<TEntity>()
-                ?? throw new InvalidOperationException($"DbSet of type {typeof(TEntity).Name} is not registered");
+            return DbContext.Set<TEntity>();
         }
     }
 }
