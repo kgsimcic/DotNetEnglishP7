@@ -158,7 +158,7 @@ namespace Dot.Net.WebApi.Tests
             };
             _mockService.Setup(service => service.GetUserById(newUser.Id)).Returns((User)null!);
             // _mockService.Setup(service => service.GetUserByName(newUser.UserName)).ReturnsAsync((User)null!);
-            _mockService.Setup(service => service.CreateUser(newUser)).ReturnsAsync(1);
+            _mockService.Setup(service => service.CreateUser(newUser)).ReturnsAsync(Result.Success);
             controller = new UserController(_mockService.Object);
 
             // Act
@@ -244,7 +244,7 @@ namespace Dot.Net.WebApi.Tests
                 UserName = "NewUser",
                 Password = "pwd"
             };
-            _mockService.Setup(service => service.UpdateUser(updateUser.Id, updateUser)).ReturnsAsync(1);
+            _mockService.Setup(service => service.UpdateUser(updateUser.Id, updateUser)).ReturnsAsync(Result.Success);
             controller = new UserController(_mockService.Object);
 
             // Act

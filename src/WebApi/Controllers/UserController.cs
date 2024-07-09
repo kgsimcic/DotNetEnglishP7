@@ -49,12 +49,6 @@ namespace Dot.Net.WebApi.Controllers
                 return BadRequest("User cannot be null.");
             }
 
-            /*if (!Validate(user))
-            {
-                Console.WriteLine(ModelState.ErrorCount);
-                return BadRequest(ModelState);
-            }*/
-
             // Check if a user with the same ID already exists
             var existingUser = _userService.GetUserById(user.Id);
             if (existingUser != null)
@@ -71,7 +65,12 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A user with this username already exists.");
             }*/
 
-            await _userService.CreateUser(user);
+            var result = await _userService.CreateUser(user);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error.Description);
+            }
 
             return Created($"user/{user.Id}", user);
         }
@@ -83,14 +82,20 @@ namespace Dot.Net.WebApi.Controllers
 
             if (id != user.Id) { return BadRequest("ID in the URL does not match the ID of the user."); }
 
+
             try
             {
-                await _userService.UpdateUser(id, user);
+                var result = await _userService.UpdateUser(id, user);
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result.Error.Description);
+                }
             }
             catch (KeyNotFoundException)
             {
                 return NotFound();
             }
+
             return NoContent();
 
         }

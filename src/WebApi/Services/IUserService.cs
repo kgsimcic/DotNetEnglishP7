@@ -1,5 +1,6 @@
 ﻿using Dot.Net.WebApi.Domain;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Dot.Net.WebApi.Services
@@ -12,8 +13,8 @@ namespace Dot.Net.WebApi.Services
 # nullable enable
         User? GetUserById(int id);
 # nullable disable
-        Task<int> CreateUser(User user);
-        Task<int> UpdateUser(int id, User user);
+        Task<Result> CreateUser(User user);
+        Task<Result> UpdateUser(int id, User user);
         Task<int> DeleteUser(int id);
     }
 }

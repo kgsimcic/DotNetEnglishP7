@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Query;
 using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Dot.Net.WebApi.Services
 {
@@ -19,45 +20,49 @@ namespace Dot.Net.WebApi.Services
 
         public bool HasNumber(string str)
         {
-            return str.Any(ch => !char.IsNumber(ch));
+            return str.Any(ch => char.IsNumber(ch));
         }
         public bool HasSpecialChar(string str) {
             return str.Any(ch => !char.IsLetterOrDigit(ch));
         }
 
-        public (bool isValid, List<string> validationErrors) ValidateUser(User user) {
-
-            var validationErrors = new List<string>();
+        public Result ValidateUser(User user) {
 
             // Validate username
             if (string.IsNullOrWhiteSpace(user.UserName))
             {
-                validationErrors.Add("Username is required.");
+                return Result.Failure(
+                    new Error("User.UsernameRequired", "Username is required."));
             }
 
             // Validate password (8 chars at least, one uppercase, number, symbol)
             if (string.IsNullOrWhiteSpace(user.Password))
             {
-                validationErrors.Add("Password is required.");
+                return Result.Failure(
+                    new Error("User.PasswordRequired", "Password is required."));
             }
             else if (user.Password.Length < 8)
             {
-                validationErrors.Add("Password must be at least 8 characters long.");
+                return Result.Failure(
+                    new Error("User.PasswordTooShort", "Password must be at least 8 characters long."));
             }
             else if (string.Equals(user.Password.ToLower(), user.Password))
             {
-                validationErrors.Add("Password must contain at least one uppercase character.");
+                return Result.Failure(
+                    new Error("User.PasswordNeedsUppercase", "Password must contain at least one uppercase character."));
             }
             else if (!HasNumber(user.Password))
             {
-                validationErrors.Add("Password must have at least one number.");
+                return Result.Failure(
+                    new Error("User.PasswordNeedsNumber", "Password must have at least one number."));
             }
             else if (!HasSpecialChar(user.Password))
             {
-                validationErrors.Add("Password must contain at least one special character.");
+                return Result.Failure(
+                    new Error("User.PasswordNeedsSpecial", "Password must contain at least one special character."));
             }
 
-            return (validationErrors.Count == 0, validationErrors);
+            return Result.Success();
         }
 
         public User[] GetAllUsers()
@@ -70,36 +75,44 @@ namespace Dot.Net.WebApi.Services
             return await _userRepository.FindByUserName(userName);
         }*/
 
-        public async Task<int> CreateUser(User user)
+        public async Task<Result> CreateUser(User user)
         {
             var validationResult = ValidateUser(user);
 
-            if (!validationResult.isValid)
+            if (!validationResult.IsSuccess)
             {
-                return 0;
+                return validationResult;
             }
 
             _userRepository.Add(user);
-            return await _userRepository.SaveChangesAsync();
+            await _userRepository.SaveChangesAsync();
+            return validationResult;
         }
-        public async Task<int> UpdateUser(int id, User user)
+
+        public async Task<Result> UpdateUser(int id, User user)
         {
 
             var existingUser = _userRepository.GetById(id);
-            // Console.WriteLine(existingUser);
             if (existingUser == null)
             {
                 throw new KeyNotFoundException("User not found.");
             }
 
+            var validationResult = ValidateUser(user);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _userRepository.Update(user);
-            return await _userRepository.SaveChangesAsync();
+            await _userRepository.SaveChangesAsync();
+            return validationResult;
         }
 
         public async Task<int> DeleteUser(int id)
         {
             var existingUser = _userRepository.GetById(id);
-            // Console.WriteLine(existingUser);
             if (existingUser == null)
             {
                 throw new KeyNotFoundException("User not found.");

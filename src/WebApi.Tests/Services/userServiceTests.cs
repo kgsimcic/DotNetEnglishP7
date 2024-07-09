@@ -8,6 +8,7 @@ using Microsoft.Identity.Client;
 using Dot.Net.WebApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Dot.Net.WebApi.Tests
 {
@@ -26,7 +27,7 @@ namespace Dot.Net.WebApi.Tests
                 {
                     Id = 1,
                     UserName = "Admin",
-                    Password = "Admin_pw",
+                    Password = "Admin_pw5",
                     FullName = "A",
                     Role = "admin user"
                 },
@@ -34,7 +35,7 @@ namespace Dot.Net.WebApi.Tests
                 {
                     Id = 2,
                     UserName = "Test",
-                    Password = "Test",
+                    Password = "TestPassw0rd!",
                     FullName = "Test",
                     Role = "test user"
                 }
@@ -126,8 +127,8 @@ namespace Dot.Net.WebApi.Tests
             var result = await userService.CreateUser(newUser);
 
             // Assert
-            Assert.IsType<int>(result);
-            Assert.Equal(1, result);
+            Assert.IsType<Result>(result);
+            Assert.True(result.IsSuccess);
         }
 
         [Fact]
@@ -161,8 +162,8 @@ namespace Dot.Net.WebApi.Tests
             var result = await userService.UpdateUser(1, existingUser);
 
             // Assert
-            Assert.IsType<int>(result);
-            Assert.Equal(1, result);
+            Assert.IsType<Result>(result);
+            Assert.True(result.IsSuccess);
         }
 
         // Test DeleteUser method
@@ -195,8 +196,126 @@ namespace Dot.Net.WebApi.Tests
             Assert.Equal(1, result);
         }
 
-        // test validation: 3 for create method, one for update method
-        // to make sure it is called.
+        // Test validation: 4 for create method, 1 for update method
+
+        [Fact]
+        public async Task CreateUser_Invalid_ShouldReturnNeedsSpecialError()
+        {
+            var newUser = new User
+            {
+                Id = 3,
+                UserName = "NewUser",
+                Password = "Password1"
+            };
+
+            // Arrange 
+            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
+            userService = new UserService(_mockRepository.Object);
+
+            // Act
+            var result = await userService.CreateUser(newUser);
+
+            // Assert - should give needs special char error
+            Assert.IsType<Result>(result);
+            Assert.False(result.IsSuccess);
+            Assert.Equal("User.PasswordNeedsSpecial", result.Error.Code);
+        }
+
+        [Fact]
+        public async Task CreateUser_Invalid_ShouldReturnNeedsUppercaseError()
+        {
+            var newUser = new User
+            {
+                Id = 3,
+                UserName = "NewUser",
+                Password = "password1"
+            };
+
+            // Arrange 
+            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
+            userService = new UserService(_mockRepository.Object);
+
+            // Act
+            var result = await userService.CreateUser(newUser);
+
+            // Assert - should give needs uppercase error
+            Assert.IsType<Result>(result);
+            Assert.False(result.IsSuccess);
+            Assert.Equal("User.PasswordNeedsUppercase", result.Error.Code);
+        }
+
+        [Fact]
+        public async Task CreateUser_Invalid_ShouldReturnUsernameRequiredError()
+        {
+            var newUser = new User
+            {
+                Id = 3,
+                UserName = "",
+                Password = "Password123@"
+            };
+
+            // Arrange 
+            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
+            userService = new UserService(_mockRepository.Object);
+
+            // Act
+            var result = await userService.CreateUser(newUser);
+
+            // Assert - should give error username required
+            Assert.IsType<Result>(result);
+            Assert.False(result.IsSuccess);
+            Assert.Equal("User.UsernameRequired", result.Error.Code);
+        }
+
+        [Fact]
+        public async Task CreateUser_Invalid_ShouldReturnPasswordNeedsNumberError()
+        {
+            var newUser = new User
+            {
+                Id = 3,
+                UserName = "Hi",
+                Password = "Password@"
+            };
+
+            // Arrange 
+            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            userService = new UserService(_mockRepository.Object);
+
+            // Act
+            var result = await userService.CreateUser(newUser);
+
+            // Assert - should give error password needs number
+            Assert.IsType<Result>(result);
+            Assert.False(result.IsSuccess);
+            Assert.Equal("User.PasswordNeedsNumber", result.Error.Code);
+        }
+
+        [Fact]
+        public async Task UpdateUser_Invalid_ShouldReturnPasswordTooShortError()
+        {
+            var newUser = new User
+            {
+                Id = 3,
+                UserName = "NewUser",
+                Password = "pass"
+            };
+
+            var existingUser = mockUsers[0];
+            // Arrange 
+            _mockRepository.Setup(repo => repo.GetById(1)).Returns(existingUser);
+            userService = new UserService(_mockRepository.Object);
+
+            // Act
+            var result = await userService.UpdateUser(1, newUser);
+
+            // Assert - should give password too short error
+            Assert.IsType<Result>(result);
+            Assert.False(result.IsSuccess);
+            Assert.Equal("User.PasswordTooShort", result.Error.Code);
+        }
 
     }
 }
