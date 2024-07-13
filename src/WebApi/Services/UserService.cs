@@ -14,6 +14,7 @@ namespace Dot.Net.WebApi.Services
     {
 
         protected IRepository<User> _userRepository { get; }
+
         public UserService(IRepository<User> userRepository) {
             _userRepository = userRepository;
         }
