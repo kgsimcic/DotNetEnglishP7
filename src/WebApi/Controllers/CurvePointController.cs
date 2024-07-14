@@ -26,20 +26,20 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/curvepoints")]
-        public IActionResult GetAllCurvePoints()
+        public async Task<ActionResult> GetAllCurvePoints()
         {
             _logger.LogInformation("Connected to endpoint /curvepoints!");
 
-            var curvePoints = _curvePointService.GetAllCurvePoints().ToList();
+            var curvePoints = await _curvePointService.GetAllCurvePoints();
             return Ok(curvePoints);
         }
 
         [HttpGet("/curvepoints/{id}")]
-        public ActionResult<CurvePoint> GetCurvePointById(int id)
+        public async Task<ActionResult> GetCurvePointById(int id)
         {
             _logger.LogInformation($"Connected to endpoint /curvepoints/{id}!");
 
-            var curvePoint = _curvePointService.GetCurvePoint(id);
+            var curvePoint = await _curvePointService.GetCurvePoint(id);
 
             if (curvePoint == null)
             {

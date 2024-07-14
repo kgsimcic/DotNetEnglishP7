@@ -52,7 +52,7 @@ namespace Dot.Net.WebApi.Tests
         {
 
             // Arrange
-            _mockService.Setup(service => service.GetAllUsers()).Returns(mockUsers);
+            _mockService.Setup(service => service.GetAllUsers()).ReturnsAsync(mockUsers);
             controller = new UserController(_mockService.Object, mockLogger.Object);
 
             // Act
@@ -69,7 +69,7 @@ namespace Dot.Net.WebApi.Tests
         {
 
             // Arrange
-            _mockService.Setup(service => service.GetAllUsers()).Returns(Array.Empty<User>());
+            _mockService.Setup(service => service.GetAllUsers()).ReturnsAsync(Array.Empty<User>());
             controller = new UserController(_mockService.Object, mockLogger.Object);
 
             // Act
@@ -138,7 +138,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Arrange
             var existingUser = mockUsers.First();
-            _mockService.Setup(service => service.GetUserById(existingUser.Id)).Returns(existingUser);
+            _mockService.Setup(service => service.GetUserById(existingUser.Id)).ReturnsAsync(existingUser);
             controller = new UserController(_mockService.Object, mockLogger.Object);
 
             // Act
@@ -159,7 +159,7 @@ namespace Dot.Net.WebApi.Tests
                 UserName = "NewUser",
                 Password = "pwd"
             };
-            _mockService.Setup(service => service.GetUserById(newUser.Id)).Returns((User)null!);
+            _mockService.Setup(service => service.GetUserById(newUser.Id)).ReturnsAsync((User)null!);
             _mockService.Setup(service => service.CreateUser(newUser)).ReturnsAsync(Result.Success);
             controller = new UserController(_mockService.Object, mockLogger.Object);
 

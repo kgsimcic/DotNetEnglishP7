@@ -24,10 +24,10 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/rules")]
-        public IActionResult GetAllRules()
+        public async Task<ActionResult> GetAllRules()
         {
             _logger.LogInformation("Connected to endpoint /rules!");
-            var result = _ruleService.GetAllRules().ToList();
+            var result = await _ruleService.GetAllRules();
             if (result is null)
             {
                 return NoContent();
@@ -36,10 +36,10 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("rules/{id}")]
-        public ActionResult<Rule> GetRuleById(int id)
+        public async Task<ActionResult> GetRuleById(int id)
         {
             _logger.LogInformation($"Connected to endpoint /rules/{id}!");
-            var rule = _ruleService.GetRule(id);
+            var rule = await _ruleService.GetRule(id);
             if (rule == null)
             {
                 return NotFound();

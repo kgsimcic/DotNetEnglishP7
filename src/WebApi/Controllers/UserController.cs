@@ -26,10 +26,10 @@ namespace Dot.Net.WebApi.Controllers
     }
 
         [HttpGet("/users")]
-        public IActionResult GetAllUsers()
+        public async Task<ActionResult> GetAllUsers()
         {
             _logger.LogInformation("Connected to endpoint /users!");
-            var users = _userService.GetAllUsers().ToList();
+            var users = await _userService.GetAllUsers();
             return Ok(users);
         }
         /*

@@ -48,7 +48,7 @@ namespace Dot.Net.WebApi.Tests
         {
 
             // Arrange
-            _mockService.Setup(service => service.GetAllTrades()).Returns(mockTrades);
+            _mockService.Setup(service => service.GetAllTrades()).ReturnsAsync(mockTrades);
             controller = new TradeController(_mockService.Object, mockLogger.Object);
 
             // Act
@@ -66,7 +66,7 @@ namespace Dot.Net.WebApi.Tests
         {
 
             // Arrange
-            _mockService.Setup(service => service.GetAllTrades()).Returns(mockTrades);
+            _mockService.Setup(service => service.GetAllTrades()).ReturnsAsync(mockTrades);
             controller = new TradeController(_mockService.Object, mockLogger.Object);
 
             // Act
@@ -98,7 +98,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Arrange
             var existingTrade = mockTrades.First();
-            _mockService.Setup(service => service.GetTrade(existingTrade.TradeId)).Returns(existingTrade);
+            _mockService.Setup(service => service.GetTrade(existingTrade.TradeId)).ReturnsAsync(existingTrade);
             controller = new TradeController(_mockService.Object, mockLogger.Object);
 
             // Act
@@ -122,7 +122,7 @@ namespace Dot.Net.WebApi.Tests
                 BuyPrice = 11.11m,
                 SellPrice = 1.11m
             };
-            _mockService.Setup(service => service.GetTrade(newTrade.TradeId)).Returns((Trade)null!);
+            _mockService.Setup(service => service.GetTrade(newTrade.TradeId)).ReturnsAsync((Trade)null!);
             _mockService.Setup(service => service.CreateTrade(newTrade)).ReturnsAsync(Result.Success);
             controller = new TradeController(_mockService.Object, mockLogger.Object);
 

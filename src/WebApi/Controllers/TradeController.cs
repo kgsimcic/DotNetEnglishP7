@@ -24,14 +24,14 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/trades")]
-        public IActionResult GetAllTrades()
+        public async Task<ActionResult> GetAllTrades()
         {
             _logger.LogInformation("Connected to endpoint /trades!");
-            return Ok(_tradeService.GetAllTrades().ToList());
+            return Ok(await _tradeService.GetAllTrades());
         }
 
         [HttpGet("/trades/{id}")]
-        public async Task<ActionResult<Trade>> GetTradeById(int id)
+        public async Task<ActionResult> GetTradeById(int id)
         {
             _logger.LogInformation($"Connected to endpoint /trades/{id}!");
             var trade = await _tradeService.GetTrade(id);

@@ -26,17 +26,17 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/ratings")]
-        public IActionResult GetAllRatings()
+        public async Task<ActionResult> GetAllRatings()
         {
             _logger.LogInformation("Connected to endpoint /ratings!");
-            return Ok(_ratingService.GetAllRatings().ToList());
+            return Ok(await _ratingService.GetAllRatings());
         }
 
         [HttpGet("/ratings/{id}")]
-        public ActionResult<Rating> GetRatingById(int id)
+        public async Task<ActionResult> GetRatingById(int id)
         {
             _logger.LogInformation($"Connected to endpoint /ratings/{id}!");
-            var rating = _ratingService.GetRating(id);
+            var rating = await _ratingService.GetRating(id);
 
             if (rating == null)
             {

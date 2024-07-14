@@ -26,19 +26,19 @@ namespace Dot.Net.WebApi.Controllers
         }
 
         [HttpGet("/bids")]
-        public IActionResult GetAllBids()
+        public async Task<ActionResult> GetAllBids()
         {
             _logger.LogInformation("Connected to endpoint /bids!");
-            var bids = _bidService.GetAllBids().ToList();
+            var bids = await _bidService.GetAllBids();
             return Ok(bids);
         }
 
         [HttpGet("/bids/{id}")]
-        public ActionResult<Bid> GetBidById(int id)
+        public async Task<ActionResult> GetBidById(int id)
         {
             _logger.LogInformation($"Connected to endpoint /bids/{id}!");
 
-            var bid = _bidService.GetBid(id);
+            var bid = await _bidService.GetBid(id);
 
             if (bid == null)
             {
