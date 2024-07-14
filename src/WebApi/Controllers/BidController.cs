@@ -11,22 +11,23 @@ using Dot.Net.WebApi.Services;
 
 namespace Dot.Net.WebApi.Controllers
 {
-
-    
     [Route("[controller]")]
+    [ApiController]
     public class BidController : Controller
     {
-
         private readonly IBidService _bidService;
+        private readonly ILogger<BidController> _logger;
 
-        public BidController(IBidService bidService)
+        public BidController(IBidService bidService, ILogger<BidController> logger)
         {
             _bidService = bidService;
+            _logger = logger;
         }
 
         [HttpGet("/bids")]
-        public IActionResult Home()
+        public IActionResult GetAllBids()
         {
+            _logger.LogInformation("Connected to endpoint /bids!");
             var bids = _bidService.GetAllBids().ToList();
             return Ok(bids);
         }
@@ -34,6 +35,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpGet("/bids/{id}")]
         public ActionResult<Bid> GetBidById(int id)
         {
+            _logger.LogInformation($"Connected to endpoint /bids/{id}!");
+
             var bid = _bidService.GetBid(id);
 
             if (bid == null)
@@ -43,7 +46,7 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(bid);
         }
 
-        public bool Validate([FromBody]Bid bidList)
+        public bool Validate([FromBody]Bid bid)
         {
             return ModelState.IsValid;
         }
@@ -57,6 +60,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpPost("/bids")]
         public async Task<ActionResult> CreateBid([FromBody] Bid bid)
         {
+            _logger.LogInformation("Connected to endpoint /bids!");
+
             if (bid == null)
             {
                 return BadRequest("Bid cannot be null.");
@@ -76,6 +81,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpPut("/bids/{id}")]
         public async Task<ActionResult> UpdateBid(int id, [FromBody] Bid bid)
         {
+            _logger.LogInformation($"Connected to endpoint /bids/{id}!");
+
             if (bid == null) { return BadRequest("Bid cannot be null."); }
 
             if (id != bid.BidListId) { return BadRequest("ID in the URL does not match the ID of the bid."); }
@@ -95,6 +102,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpDelete("/bids/{id}")]
         public async Task<ActionResult> DeleteBid(int id)
         {
+            _logger.LogInformation($"Connected to endpoint /bids/{id}!");
+
             try
             {
                 await _bidService.DeleteBid(id);

@@ -15,22 +15,26 @@ namespace Dot.Net.WebApi.Controllers
     public class TradeController : Controller
     {
         private readonly ITradeService _tradeService;
+        private readonly ILogger<TradeController> _logger;
 
-        public TradeController(ITradeService tradeService)
+        public TradeController(ITradeService tradeService, ILogger<TradeController> logger)
         {
             _tradeService = tradeService;
+            _logger = logger;
         }
 
         [HttpGet("/trades")]
         public IActionResult GetAllTrades()
         {
+            _logger.LogInformation("Connected to endpoint /trades!");
             return Ok(_tradeService.GetAllTrades().ToList());
         }
 
         [HttpGet("/trades/{id}")]
-        public ActionResult<Trade> GetTradeById(int id)
+        public async Task<ActionResult<Trade>> GetTradeById(int id)
         {
-            var trade = _tradeService.GetTrade(id);
+            _logger.LogInformation($"Connected to endpoint /trades/{id}!");
+            var trade = await _tradeService.GetTrade(id);
 
             if (trade == null)
             {
@@ -42,6 +46,7 @@ namespace Dot.Net.WebApi.Controllers
         [HttpPost("/trades")]
         public async Task<ActionResult> CreateTrade([FromBody]Trade trade)
         {
+            _logger.LogInformation("Connected to endpoint /trades!");
             if (trade == null)
             {
                 return BadRequest("Trade cannot be null.");
@@ -59,11 +64,6 @@ namespace Dot.Net.WebApi.Controllers
             return Created($"trade/{trade.TradeId}", trade);
         }
 
-        public bool Validate([FromBody]Trade trade)
-        {
-            return ModelState.IsValid;
-        }
-
         /*[HttpGet("/trade/update/{id}")]
         public IActionResult ShowUpdateForm(int id)
         {
@@ -74,6 +74,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpPut("/trades/{id}")]
         public async Task<ActionResult> UpdateTrade(int id, [FromBody] Trade trade)
         {
+            _logger.LogInformation($"Connected to endpoint /trade/{id}!");
+
             if (trade == null) { return BadRequest("Trade cannot be null."); }
 
             if (id != trade.TradeId) { return BadRequest("ID in the URL does not match the ID of the trade record."); }
@@ -92,6 +94,7 @@ namespace Dot.Net.WebApi.Controllers
         [HttpDelete("/trades/{id}")]
         public async Task<ActionResult> DeleteTrade(int id)
         {
+            _logger.LogInformation($"Connected to endpoint /trades/{id}!");
 
             try
             {

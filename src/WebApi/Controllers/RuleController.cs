@@ -11,19 +11,22 @@ using Dot.Net.WebApi.Services;
 namespace Dot.Net.WebApi.Controllers
 {
     [Route("[controller]")]
+    [ApiController]
     public class RuleController : Controller
     {
-        // TODO: Inject RuleName service
         private readonly IRuleService _ruleService;
+        private readonly ILogger<RuleController> _logger;
 
-        public RuleController(IRuleService ruleService)
+        public RuleController(IRuleService ruleService, ILogger<RuleController> logger)
         {
             _ruleService = ruleService;
+            _logger = logger;
         }
 
         [HttpGet("/rules")]
-        public IActionResult Home()
+        public IActionResult GetAllRules()
         {
+            _logger.LogInformation("Connected to endpoint /rules!");
             var result = _ruleService.GetAllRules().ToList();
             if (result is null)
             {
@@ -35,6 +38,7 @@ namespace Dot.Net.WebApi.Controllers
         [HttpGet("rules/{id}")]
         public ActionResult<Rule> GetRuleById(int id)
         {
+            _logger.LogInformation($"Connected to endpoint /rules/{id}!");
             var rule = _ruleService.GetRule(id);
             if (rule == null)
             {
@@ -46,6 +50,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpPost("/rules")]
         public async Task<ActionResult> CreateRule([FromBody]Rule rule)
         {
+            _logger.LogInformation("Connected to endpoint /rules!");
+
             if (rule == null)
             {
                 return BadRequest("Rule cannot be null.");
@@ -61,11 +67,6 @@ namespace Dot.Net.WebApi.Controllers
             return Created($"rule/{rule.Id}", rule);
         }
 
-        public bool Validate([FromBody]Rule ruleName)
-        {
-            return ModelState.IsValid;
-        }
-
         /*[HttpGet("/ruleName/update/{id}")]
         public IActionResult ShowUpdateForm(int id)
         {
@@ -76,6 +77,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpPut("/rules/{id}")]
         public async Task<ActionResult> UpdateRule(int id, [FromBody] Rule rule)
         {
+            _logger.LogInformation($"Connected to endpoint /rules/{id}!");
+
             if (rule == null) { return BadRequest("Rule cannot be null."); }
 
             if (id != rule.Id) { return BadRequest("ID in the URL does not match the ID of the rule."); }
@@ -94,6 +97,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpDelete("/rules/{id}")]
         public async Task<ActionResult> DeleteRule(int id)
         {
+            _logger.LogInformation($"Connected to endpoint /rules/{id}!");
+
             try
             {
                 await _ruleService.DeleteRule(id);

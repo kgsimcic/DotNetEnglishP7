@@ -12,24 +12,29 @@ using Dot.Net.WebApi.Services;
 namespace Dot.Net.WebApi.Controllers
 {
     [Route("[controller]")]
+    [ApiController]
     public class RatingController : Controller
     {
         private readonly IRatingService _ratingService;
+        private readonly ILogger<RatingController> _logger;
 
-        public RatingController(IRatingService ratingService)
+        public RatingController(IRatingService ratingService, ILogger<RatingController> logger)
         {
             _ratingService = ratingService;
+            _logger = logger;
         }
 
         [HttpGet("/ratings")]
-        public IActionResult Home()
+        public IActionResult GetAllRatings()
         {
+            _logger.LogInformation("Connected to endpoint /ratings!");
             return Ok(_ratingService.GetAllRatings().ToList());
         }
 
         [HttpGet("/ratings/{id}")]
         public ActionResult<Rating> GetRatingById(int id)
         {
+            _logger.LogInformation($"Connected to endpoint /ratings/{id}!");
             var rating = _ratingService.GetRating(id);
 
             if (rating == null)
@@ -57,11 +62,6 @@ namespace Dot.Net.WebApi.Controllers
             return Created($"ratings/{rating.Id}", rating);
         }
 
-        public bool Validate([FromBody]Rating rating)
-        {
-            return ModelState.IsValid;
-        }
-
         /*[HttpGet("/rating/update/{id}")]
         public IActionResult ShowUpdateForm(int id)
         {
@@ -70,8 +70,10 @@ namespace Dot.Net.WebApi.Controllers
         }*/
 
         [HttpPut("/ratings/{id}")]
-        public async Task<ActionResult> updateRating(int id, [FromBody] Rating rating)
+        public async Task<ActionResult> UpdateRating(int id, [FromBody] Rating rating)
         {
+            _logger.LogInformation($"Connected to endpoint /ratings/{id}!");
+
             if (rating == null) { return BadRequest("Rating cannot be null."); }
 
             if (id != rating.Id) { return BadRequest("ID in the URL does not match the ID of the rating."); }
@@ -90,6 +92,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpDelete("/rating/{id}")]
         public async Task<ActionResult> DeleteRating(int id)
         {
+            _logger.LogInformation($"Connected to endpoint /ratings/{id}!");
+
             try
             {
                 await _ratingService.DeleteRating(id);
