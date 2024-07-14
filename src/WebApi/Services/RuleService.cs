@@ -17,6 +17,17 @@ namespace Dot.Net.WebApi.Services
             _ruleRepository = ruleRepository;
         }
 
+        public Result ValidateRule(Rule rule)
+        {
+            // Validate rule name
+            if (string.IsNullOrWhiteSpace(rule.Name))
+            {
+                return Result.Failure(
+                    new Error("Rule.NameRequired", "Rule Name is required."));
+            }
+            return Result.Success();
+        }
+
         public Rule[] GetAllRules()
         {
             return _ruleRepository.GetAll();
@@ -28,7 +39,7 @@ namespace Dot.Net.WebApi.Services
         }
 # nullable disable
 
-        public async Task<int> CreateRule(Rule rule)
+        public async Task<Result> CreateRule(Rule rule)
         {
             var validationResult = ValidateRule(rule);
 
@@ -54,7 +65,7 @@ namespace Dot.Net.WebApi.Services
             return await _ruleRepository.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateRule(int id, Rule rule)
+        public async Task<Result> UpdateRule(int id, Rule rule)
         {
             var existingRule = _ruleRepository.GetById(id);
             if (existingRule == null)

@@ -8,6 +8,7 @@ using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Dot.Net.WebApi.Services;
+using System.Data;
 
 namespace Dot.Net.WebApi.Controllers
 {
@@ -63,7 +64,13 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A curve point with this ID already exists.");
             }
 
-            await _curvePointService.CreateCurvePoint(curvePoint);
+            var result = await _curvePointService.CreateCurvePoint(curvePoint);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error.Description);
+            }
+
             return Created($"curvePoints/{curvePoint.Id}", curvePoint);
         }
 
@@ -85,7 +92,11 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _curvePointService.UpdateCurvePoint(id, curvePoint);
+                var result = await _curvePointService.UpdateCurvePoint(id, curvePoint);
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result.Error.Description);
+                }
             }
             catch (KeyNotFoundException)
             {

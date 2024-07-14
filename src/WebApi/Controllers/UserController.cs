@@ -26,7 +26,7 @@ namespace Dot.Net.WebApi.Controllers
     }
 
         [HttpGet("/users")]
-        public IActionResult Home()
+        public IActionResult GetAllUsers()
         {
             _logger.LogInformation("Connected to endpoint /users!");
             var users = _userService.GetAllUsers().ToList();

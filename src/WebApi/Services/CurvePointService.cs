@@ -17,6 +17,32 @@ namespace Dot.Net.WebApi.Services
             _curvePointRepository = curvePointRepository;
         }
 
+        public Result ValidateCurvePoint(CurvePoint curvePoint)
+        {
+            // Validate curvePoint CurveId
+            if (curvePoint.CurveId < 1)
+            {
+                return Result.Failure(
+                    new Error("curvePoint.CurveIdNegOrZero", "CurvePoint CurveID cannot be negative or zero."));
+            }
+
+            // Validate curvePoint term
+            if (decimal.IsNegative(curvePoint.Term))
+            {
+                return Result.Failure(
+                    new Error("curvePoint.TermNegative", "CurvePoint Term cannot be negative."));
+            }
+
+            // Validate curvePoint value
+            if (decimal.IsNegative(curvePoint.Term))
+            {
+                return Result.Failure(
+                    new Error("curvePoint.ValueNegative", "CurvePoint Value cannot be negative."));
+            }
+
+            return Result.Success();
+        }
+
         public CurvePoint[] GetAllCurvePoints()
         {
             return _curvePointRepository.GetAll();

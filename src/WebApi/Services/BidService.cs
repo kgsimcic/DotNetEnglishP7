@@ -17,6 +17,36 @@ namespace  Dot.Net.WebApi.Services
             _bidRepository = bidRepository;
         }
 
+        public Result ValidateBid(Bid bid)
+        {
+            // Validate bid quantity
+            if (decimal.IsNegative(bid.BidQuantity))
+            {
+                return Result.Failure(
+                    new Error("bid.BidQuantityNegative", "Bid Quantity cannot be negative."));
+            }
+            // Validate ask quantity
+            if (decimal.IsNegative(bid.AskQuantity))
+            {
+                return Result.Failure(
+                    new Error("bid.AskQuantityNegative", "Bid Ask Quantity Term cannot be negative."));
+            }
+            // Validate bid amount
+            if (decimal.IsNegative(bid.BidAmount))
+            {
+                return Result.Failure(
+                    new Error("bid.BidAmountNegative", "Bid Amount cannot be negative."));
+            }
+            // Validate ask
+            if (decimal.IsNegative(bid.Ask))
+            {
+                return Result.Failure(
+                    new Error("bid.AskNegative", "Bid Ask Amount cannot be negative."));
+            }
+
+            return Result.Success();
+        }
+
         public Bid[] GetAllBids()
         {
             return _bidRepository.GetAll();

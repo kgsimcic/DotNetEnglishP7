@@ -15,7 +15,7 @@ namespace Dot.Net.WebApi.Domain
         public decimal BidQuantity { get; set; } = decimal.Zero;
         public decimal AskQuantity { get; set; } = decimal.Zero;
         public decimal BidAmount { get; set; } = decimal.Zero;
-        public decimal? Ask { get; set; } = decimal.Zero;
+        public decimal Ask { get; set; } = decimal.Zero;
         public string? Benchmark { get; set; }
         public DateTime? BidListDate { get; set; }
         public string? Commentary { get; set; }

@@ -10,8 +10,8 @@ namespace Dot.Net.WebApi.Domain
         [Required]
         public int CurveId { get; set; }
         public DateTime? AsOfDate { get; set; }
-        public decimal? Term { get; set; } = decimal.Zero;
-        public decimal? Value { get; set; } = decimal.Zero;
+        public decimal Term { get; set; } = decimal.Zero;
+        public decimal Value { get; set; } = decimal.Zero;
         public DateTime? CreationDate { get; set; }
     }
 }
