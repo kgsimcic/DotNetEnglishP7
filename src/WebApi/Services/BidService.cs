@@ -47,14 +47,14 @@ namespace  Dot.Net.WebApi.Services
             return Result.Success();
         }
 
-        public Bid[] GetAllBids()
+        public async Task<Bid[]> GetAllBids()
         {
-            return _bidRepository.GetAll();
+            return await _bidRepository.GetAll();
         }
 # nullable enable
-        public Bid? GetBid(int id)
+        public async Task<Bid?> GetBid(int id)
         {
-            return _bidRepository.GetById(id);
+            return await _bidRepository.GetById(id);
         }
 # nullable disable
 
@@ -74,7 +74,7 @@ namespace  Dot.Net.WebApi.Services
 
         public async Task<int> DeleteBid(int id)
         {
-            var existingBid = _bidRepository.GetById(id);
+            var existingBid = await _bidRepository.GetById(id);
             if (existingBid == null)
             {
                 throw new KeyNotFoundException("Bid not found.");

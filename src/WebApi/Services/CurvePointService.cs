@@ -43,14 +43,14 @@ namespace Dot.Net.WebApi.Services
             return Result.Success();
         }
 
-        public CurvePoint[] GetAllCurvePoints()
+        public async Task<CurvePoint[]> GetAllCurvePoints()
         {
-            return _curvePointRepository.GetAll();
+            return await _curvePointRepository.GetAll();
         }
 # nullable enable
-        public CurvePoint? GetCurvePoint(int id)
+        public async Task<CurvePoint?> GetCurvePoint(int id)
         {
-            return _curvePointRepository.GetById(id);
+            return await _curvePointRepository.GetById(id);
         }
 # nullable disable
 
@@ -70,7 +70,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<int> DeleteCurvePoint(int id)
         {
-            var existingCurvePoint = _curvePointRepository.GetById(id);
+            var existingCurvePoint = await _curvePointRepository.GetById(id);
             if (existingCurvePoint == null)
             {
                 throw new KeyNotFoundException("Curve point not found.");

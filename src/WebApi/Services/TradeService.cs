@@ -45,15 +45,15 @@ namespace Dot.Net.WebApi.Services
             return Result.Success();
         }
 
-        public Trade[] GetAllTrades()
+        public async Task<Trade[]> GetAllTrades()
         {
-            return _tradeRepository.GetAll();
+            return await _tradeRepository.GetAll();
         }
 
 # nullable enable
-        public Trade? GetTrade(int id)
+        public async Task<Trade?> GetTrade(int id)
         {
-            return _tradeRepository.GetById(id);
+            return await _tradeRepository.GetById(id);
         }
 # nullable disable
 
@@ -73,7 +73,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<int> DeleteTrade(int id)
         {
-            var existingTrade = _tradeRepository.GetById(id);
+            var existingTrade = await _tradeRepository.GetById(id);
             if (existingTrade == null)
             {
                 throw new KeyNotFoundException("Trade not found.");

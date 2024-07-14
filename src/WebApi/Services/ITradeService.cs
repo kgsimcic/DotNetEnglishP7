@@ -6,9 +6,9 @@ namespace Dot.Net.WebApi.Services
 {
     public interface ITradeService
     {
-        Trade[] GetAllTrades();
+        Task<Trade[]> GetAllTrades();
 # nullable enable
-        Trade? GetTrade(int id);
+        Task<Trade?> GetTrade(int id);
 # nullable disable
         Task<Result> CreateTrade(Trade trade);
         Task<int> DeleteTrade(int id);

@@ -28,14 +28,14 @@ namespace Dot.Net.WebApi.Services
             return Result.Success();
         }
 
-        public Rule[] GetAllRules()
+        public async Task<Rule[]> GetAllRules()
         {
-            return _ruleRepository.GetAll();
+            return await _ruleRepository.GetAll();
         }
 # nullable enable
-        public Rule? GetRule(int id)
+        public async Task<Rule?> GetRule(int id)
         {
-            return _ruleRepository.GetById(id);
+            return await _ruleRepository.GetById(id);
         }
 # nullable disable
 
@@ -55,7 +55,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<int> DeleteRule(int id)
         {
-            var existingRule = _ruleRepository.GetById(id);
+            var existingRule = await _ruleRepository.GetById(id);
             if (existingRule == null)
             {
                 throw new KeyNotFoundException("Rule not found.");

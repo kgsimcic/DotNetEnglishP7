@@ -7,9 +7,9 @@ namespace Dot.Net.WebApi.Repositories
     public interface IRepository<TEntity>
         where TEntity : class
     {
-        TEntity[] GetAll();
+        Task<TEntity[]> GetAll();
 # nullable enable
-        TEntity? GetById(int id);
+        Task<TEntity?> GetById(int id);
 # nullable disable
         void Add(TEntity entity);
         void Update(TEntity entity);

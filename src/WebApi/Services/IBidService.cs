@@ -8,9 +8,9 @@ namespace Dot.Net.WebApi.Services
 {
     public interface IBidService
     {
-        Bid[] GetAllBids();
+        Task<Bid[]> GetAllBids();
 # nullable enable
-        Bid? GetBid(int id);
+        Task<Bid?> GetBid(int id);
 # nullable disable
         Task<Result> CreateBid(Bid bid);
         Task<int> DeleteBid(int id);

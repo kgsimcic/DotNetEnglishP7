@@ -8,9 +8,9 @@ namespace Dot.Net.WebApi.Services
 {
     public interface ICurvePointService
     {
-        CurvePoint[] GetAllCurvePoints();
+        Task<CurvePoint[]> GetAllCurvePoints();
 # nullable enable
-        CurvePoint? GetCurvePoint(int id);
+        Task<CurvePoint?> GetCurvePoint(int id);
 # nullable disable
         Task<Result> CreateCurvePoint(CurvePoint curvePoint);
         Task<int> DeleteCurvePoint(int id);

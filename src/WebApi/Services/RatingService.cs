@@ -17,14 +17,26 @@ namespace Dot.Net.WebApi.Services
             _ratingRepository = ratingRepository;
         }
 
-        public Rating[] GetAllRatings()
+        public Result ValidateRating(Rating rating)
         {
-            return _ratingRepository.GetAll();
+            // Validate rating order number
+            if (int.IsNegative(rating.OrderNumber))
+            {
+                return Result.Failure(
+                    new Error("rating.OrderNumberNegative", "Order Number cannot be negative."));
+            }
+
+            return Result.Success();
+        }
+
+        public async Task<Rating[]> GetAllRatings()
+        {
+            return await _ratingRepository.GetAll();
         }
 # nullable enable
-        public Rating? GetRating(int id)
+        public async Task<Rating?> GetRating(int id)
         {
-            return _ratingRepository.GetById(id);
+            return await _ratingRepository.GetById(id);
         }
 # nullable disable
 
@@ -44,7 +56,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<int> DeleteRating(int id)
         {
-            var existingRating = _ratingRepository.GetById(id);
+            var existingRating = await _ratingRepository.GetById(id);
             if (existingRating == null)
             {
                 throw new KeyNotFoundException("Rating not found.");

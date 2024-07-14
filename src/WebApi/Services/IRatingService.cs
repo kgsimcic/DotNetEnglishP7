@@ -8,9 +8,9 @@ namespace Dot.Net.WebApi.Services
 {
     public interface IRatingService
     {
-        Rating[] GetAllRatings();
+        Task<Rating[]> GetAllRatings();
 # nullable enable
-        Rating? GetRating(int id);
+        Task<Rating?> GetRating(int id);
 # nullable disable
         Task<Result> CreateRating(Rating rating);
         Task<int> DeleteRating(int id);

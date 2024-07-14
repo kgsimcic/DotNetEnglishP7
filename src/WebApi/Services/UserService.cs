@@ -66,9 +66,9 @@ namespace Dot.Net.WebApi.Services
             return Result.Success();
         }
 
-        public User[] GetAllUsers()
+        public async Task<User[]> GetAllUsers()
         {
-            return _userRepository.GetAll();
+            return await _userRepository.GetAll();
         }
 
         /*public async Task<User> GetUserByName(string userName)
@@ -113,7 +113,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<int> DeleteUser(int id)
         {
-            var existingUser = _userRepository.GetById(id);
+            var existingUser = await _userRepository.GetById(id);
             if (existingUser == null)
             {
                 throw new KeyNotFoundException("User not found.");
@@ -124,9 +124,9 @@ namespace Dot.Net.WebApi.Services
         }
 
 # nullable enable
-        public User? GetUserById(int id)
+        public async Task<User?> GetUserById(int id)
         {
-            return _userRepository.GetById(id);
+            return await _userRepository.GetById(id);
         }
 # nullable disable
     }

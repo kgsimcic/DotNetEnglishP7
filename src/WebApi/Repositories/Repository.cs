@@ -28,15 +28,15 @@ namespace Dot.Net.WebApi.Repositories
                                   .FirstOrDefaultAsync();
         }*/
 
-        public TEntity[] GetAll()
+        public async Task<TEntity[]> GetAll()
         {
-            return Set().ToArray();
+            return await Set().ToArrayAsync();
         }
 
 # nullable enable
-        public TEntity? GetById(int id)
+        public async Task<TEntity?> GetById(int id)
         {
-            return Set().Find(id);
+            return await Set().FindAsync(id);
         }
 # nullable disable
         public void Add(TEntity entity)

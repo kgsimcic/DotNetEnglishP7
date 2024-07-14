@@ -7,9 +7,9 @@ namespace Dot.Net.WebApi.Services
 {
     public interface IRuleService
     {
-        Rule[] GetAllRules();
+        Task<Rule[]> GetAllRules();
 # nullable enable
-        Rule? GetRule(int id);
+        Task<Rule?> GetRule(int id);
 # nullable disable
         Task<Result> CreateRule(Rule ruleName);
         Task<int> DeleteRule(int id);

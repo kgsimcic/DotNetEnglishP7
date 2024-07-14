@@ -7,11 +7,11 @@ namespace Dot.Net.WebApi.Services
 {
     public interface IUserService
     {
-        User[] GetAllUsers();
+        Task<User[]> GetAllUsers();
         // Task<User> GetUserByName(string userName);
 
 # nullable enable
-        User? GetUserById(int id);
+        Task<User?> GetUserById(int id);
 # nullable disable
         Task<Result> CreateUser(User user);
         Task<Result> UpdateUser(int id, User user);
