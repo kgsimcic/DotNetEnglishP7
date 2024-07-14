@@ -11,8 +11,8 @@ namespace Dot.Net.WebApi.Services
 # nullable enable
         Rule? GetRule(int id);
 # nullable disable
-        Task<int> CreateRule(Rule ruleName);
+        Task<Result> CreateRule(Rule ruleName);
         Task<int> DeleteRule(int id);
-        Task<int> UpdateRule(int id, Rule ruleName);
+        Task<Result> UpdateRule(int id, Rule ruleName);
     }
 }

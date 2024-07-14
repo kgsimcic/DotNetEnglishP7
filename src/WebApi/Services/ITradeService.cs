@@ -10,8 +10,8 @@ namespace Dot.Net.WebApi.Services
 # nullable enable
         Trade? GetTrade(int id);
 # nullable disable
-        Task<int> CreateTrade(Trade trade);
+        Task<Result> CreateTrade(Trade trade);
         Task<int> DeleteTrade(int id);
-        Task<int> UpdateTrade(int id, Trade trade);
+        Task<Result> UpdateTrade(int id, Trade trade);
     }
 }

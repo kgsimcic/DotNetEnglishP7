@@ -59,7 +59,12 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A trade with this ID already exists.");
             }
 
-            await _tradeService.CreateTrade(trade);
+            var result = await _tradeService.CreateTrade(trade);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error.Description);
+            }
 
             return Created($"trade/{trade.TradeId}", trade);
         }
@@ -82,7 +87,11 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _tradeService.UpdateTrade(id, trade);
+                var result = await _tradeService.UpdateTrade(id, trade);
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result.Error.Description);
+                }
             }
             catch (KeyNotFoundException)
             {

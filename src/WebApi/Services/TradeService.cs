@@ -27,10 +27,18 @@ namespace Dot.Net.WebApi.Services
         }
 # nullable disable
 
-        public async Task<int> CreateTrade(Trade trade)
+        public async Task<Result> CreateTrade(Trade trade)
         {
+            var validationResult = ValidateTrade(trade);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _tradeRepository.Add(trade);
-            return await _tradeRepository.SaveChangesAsync();
+            await _tradeRepository.SaveChangesAsync();
+            return validationResult;
         }
 
         public async Task<int> DeleteTrade(int id)
@@ -45,7 +53,7 @@ namespace Dot.Net.WebApi.Services
             return await _tradeRepository.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateTrade(int id, Trade trade)
+        public async Task<Result> UpdateTrade(int id, Trade trade)
         {
             var existingTrade = _tradeRepository.GetById(id);
             if (existingTrade == null)
@@ -53,8 +61,16 @@ namespace Dot.Net.WebApi.Services
                 throw new KeyNotFoundException("Trade not found.");
             }
 
+            var validationResult = ValidateTrade(trade);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _tradeRepository.Update(trade);
-            return await _tradeRepository.SaveChangesAsync();
+            await _tradeRepository.SaveChangesAsync();
+            return validationResult;
         }
     }
 }

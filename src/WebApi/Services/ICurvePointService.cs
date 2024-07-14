@@ -12,8 +12,8 @@ namespace Dot.Net.WebApi.Services
 # nullable enable
         CurvePoint? GetCurvePoint(int id);
 # nullable disable
-        Task<int> CreateCurvePoint(CurvePoint curvePoint);
+        Task<Result> CreateCurvePoint(CurvePoint curvePoint);
         Task<int> DeleteCurvePoint(int id);
-        Task<int> UpdateCurvePoint(int id, CurvePoint curvePoint);
+        Task<Result> UpdateCurvePoint(int id, CurvePoint curvePoint);
     }
 }

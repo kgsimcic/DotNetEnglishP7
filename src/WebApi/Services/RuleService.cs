@@ -4,6 +4,7 @@ using Dot.Net.WebApi.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Dot.Net.WebApi.Services
@@ -29,8 +30,16 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<int> CreateRule(Rule rule)
         {
+            var validationResult = ValidateRule(rule);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _ruleRepository.Add(rule);
-            return await _ruleRepository.SaveChangesAsync();
+            await _ruleRepository.SaveChangesAsync();
+            return validationResult;
         }
 
         public async Task<int> DeleteRule(int id)
@@ -53,8 +62,16 @@ namespace Dot.Net.WebApi.Services
                 throw new KeyNotFoundException("Rule not found.");
             }
 
+            var validationResult = ValidateRule(rule);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _ruleRepository.Update(rule);
-            return await _ruleRepository.SaveChangesAsync();
+            await _ruleRepository.SaveChangesAsync();
+            return validationResult;
         }
     }
 }

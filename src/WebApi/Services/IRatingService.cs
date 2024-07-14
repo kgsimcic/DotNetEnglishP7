@@ -12,8 +12,8 @@ namespace Dot.Net.WebApi.Services
 # nullable enable
         Rating? GetRating(int id);
 # nullable disable
-        Task<int> CreateRating(Rating rating);
+        Task<Result> CreateRating(Rating rating);
         Task<int> DeleteRating(int id);
-        Task<int> UpdateRating(int id, Rating rating);
+        Task<Result> UpdateRating(int id, Rating rating);
     }
 }

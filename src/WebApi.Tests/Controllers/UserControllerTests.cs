@@ -45,10 +45,10 @@ namespace Dot.Net.WebApi.Tests
             mockLogger = new Mock<ILogger<UserController>>();
         }
 
-        // Test Home Method
+        // Test GetAllusers Method
 
         [Fact]
-        public void Home_Nonempty_ShouldReturnOk()
+        public void GetAllUsers_Nonempty_ShouldReturnOk()
         {
 
             // Arrange
@@ -56,7 +56,7 @@ namespace Dot.Net.WebApi.Tests
             controller = new UserController(_mockService.Object, mockLogger.Object);
 
             // Act
-            var result = controller.Home();
+            var result = controller.GetAllUsers();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
@@ -65,7 +65,7 @@ namespace Dot.Net.WebApi.Tests
         }
 
         [Fact]
-        public void Home_Empty_ShouldReturnEmpty()
+        public void GetAllUsers_Empty_ShouldReturnEmpty()
         {
 
             // Arrange
@@ -73,7 +73,7 @@ namespace Dot.Net.WebApi.Tests
             controller = new UserController(_mockService.Object, mockLogger.Object);
 
             // Act
-            var result = controller.Home();
+            var result = controller.GetAllUsers();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);

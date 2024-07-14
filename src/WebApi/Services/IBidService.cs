@@ -12,8 +12,8 @@ namespace Dot.Net.WebApi.Services
 # nullable enable
         Bid? GetBid(int id);
 # nullable disable
-        Task<int> CreateBid(Bid bid);
+        Task<Result> CreateBid(Bid bid);
         Task<int> DeleteBid(int id);
-        Task<int> UpdateBid(int id, Bid bid);
+        Task<Result> UpdateBid(int id, Bid bid);
     }
 }

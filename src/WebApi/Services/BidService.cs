@@ -28,10 +28,18 @@ namespace  Dot.Net.WebApi.Services
         }
 # nullable disable
 
-        public async Task<int> CreateBid(Bid bid)
+        public async Task<Result> CreateBid(Bid bid)
         {
+            var validationResult = ValidateBid(bid);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _bidRepository.Add(bid);
-            return await _bidRepository.SaveChangesAsync();
+            await _bidRepository.SaveChangesAsync();
+            return validationResult;
         }
 
         public async Task<int> DeleteBid(int id)
@@ -46,15 +54,24 @@ namespace  Dot.Net.WebApi.Services
             return await _bidRepository.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateBid(int id,Bid bid)
+        public async Task<Result> UpdateBid(int id,Bid bid)
         {
             var existingBid = _bidRepository.GetById(id);
             if (existingBid == null)
             {
                 throw new KeyNotFoundException("Bid not found.");
             }
+
+            var validationResult = ValidateBid(bid);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _bidRepository.Update(bid);
-            return await _bidRepository.SaveChangesAsync();
+            await _bidRepository.SaveChangesAsync();
+            return validationResult;
         }
     }
 }

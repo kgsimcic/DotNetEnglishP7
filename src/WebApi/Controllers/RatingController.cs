@@ -8,6 +8,7 @@ using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Dot.Net.WebApi.Services;
+using System.Data;
 
 namespace Dot.Net.WebApi.Controllers
 {
@@ -58,7 +59,13 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A rating with this ID already exists.");
             }
 
-            await _ratingService.CreateRating(rating);
+            var result = await _ratingService.CreateRating(rating);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error.Description);
+            }
+
             return Created($"ratings/{rating.Id}", rating);
         }
 
@@ -80,7 +87,11 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _ratingService.UpdateRating(id, rating);
+                var result = await _ratingService.UpdateRating(id, rating);
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result.Error.Description);
+                }
             }
             catch (KeyNotFoundException)
             {

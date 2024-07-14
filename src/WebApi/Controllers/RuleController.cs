@@ -63,7 +63,13 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A rule with this ID already exists.");
             }
 
-            await _ruleService.CreateRule(rule);
+            var result = await _ruleService.CreateRule(rule);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error.Description);
+            }
+
             return Created($"rule/{rule.Id}", rule);
         }
 
@@ -85,7 +91,11 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _ruleService.UpdateRule(id, rule);
+                var result = await _ruleService.UpdateRule(id, rule);
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result.Error.Description);
+                }
             }
             catch (KeyNotFoundException)
             {

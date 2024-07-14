@@ -8,6 +8,7 @@ using Dot.Net.WebApi.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Dot.Net.WebApi.Services;
+using System.Data;
 
 namespace Dot.Net.WebApi.Controllers
 {
@@ -46,11 +47,6 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(bid);
         }
 
-        public bool Validate([FromBody]Bid bid)
-        {
-            return ModelState.IsValid;
-        }
-
         /*[HttpGet("/bid/update/{id}")]
         public IActionResult ShowUpdateForm(int id)
         {
@@ -73,7 +69,12 @@ namespace Dot.Net.WebApi.Controllers
                 return Conflict("A bid with this ID already exists.");
             }
 
-            await _bidService.CreateBid(bid);
+            var result = await _bidService.CreateBid(bid);
+
+            if (!result.IsSuccess)
+            {
+                return BadRequest(result.Error.Description);
+            }
 
             return Created($"bid/{bid.BidListId}", bid);
         }
@@ -89,7 +90,11 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                await _bidService.UpdateBid(id, bid);
+                var result = await _bidService.UpdateBid(id, bid);
+                if (!result.IsSuccess)
+                {
+                    return BadRequest(result.Error.Description);
+                }
             }
             catch (KeyNotFoundException)
             {

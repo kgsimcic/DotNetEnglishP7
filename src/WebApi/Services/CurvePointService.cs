@@ -4,6 +4,7 @@ using Dot.Net.WebApi.Domain;
 using Dot.Net.WebApi.Repositories;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Dot.Net.WebApi.Services
@@ -27,10 +28,18 @@ namespace Dot.Net.WebApi.Services
         }
 # nullable disable
 
-        public async Task<int> CreateCurvePoint(CurvePoint curvePoint)
+        public async Task<Result> CreateCurvePoint(CurvePoint curvePoint)
         {
+            var validationResult = ValidateCurvePoint(curvePoint);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _curvePointRepository.Add(curvePoint);
-            return await _curvePointRepository.SaveChangesAsync();
+            await _curvePointRepository.SaveChangesAsync();
+            return validationResult;
         }
 
         public async Task<int> DeleteCurvePoint(int id)
@@ -45,7 +54,7 @@ namespace Dot.Net.WebApi.Services
             return await _curvePointRepository.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateCurvePoint(int id, CurvePoint curvePoint)
+        public async Task<Result> UpdateCurvePoint(int id, CurvePoint curvePoint)
         {
             var existingCurvePoint = _curvePointRepository.GetById(id);
             if (existingCurvePoint == null)
@@ -53,8 +62,16 @@ namespace Dot.Net.WebApi.Services
                 throw new KeyNotFoundException("Curve point not found.");
             }
 
+            var validationResult = ValidateCurvePoint(curvePoint);
+
+            if (!validationResult.IsSuccess)
+            {
+                return validationResult;
+            }
+
             _curvePointRepository.Update(curvePoint);
-            return await _curvePointRepository.SaveChangesAsync();
+            await _curvePointRepository.SaveChangesAsync();
+            return validationResult;
         }
     }
 }
