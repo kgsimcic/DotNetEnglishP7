@@ -14,7 +14,7 @@ namespace Dot.Net.WebApi.Repositories
     public class Repository<TEntity> : IRepository<TEntity>
         where TEntity : class
     {
-        public LocalDbContext DbContext { get; }
+        public LocalDbContext DbContext { get; set; }
 
         public Repository(LocalDbContext dbContext)
         {

@@ -45,14 +45,14 @@ namespace Dot.Net.WebApi.Tests
         // Test Get All method
 
         [Fact]
-        public void GetAll_Nonempty_ShouldReturnArray()
+        public async Task GetAll_Nonempty_ShouldReturnArray()
         {
             // Arrange
-            _mockRepository.Setup(repo => repo.GetAll()).Returns(mockUsers);
+            _mockRepository.Setup(repo => repo.GetAll()).ReturnsAsync(mockUsers);
             userService = new UserService(_mockRepository.Object);
 
             // Act
-            var getAllResult = userService.GetAllUsers();
+            var getAllResult = await userService.GetAllUsers();
 
             // Assert
             Assert.NotEmpty(getAllResult);
@@ -60,14 +60,14 @@ namespace Dot.Net.WebApi.Tests
         }
 
         [Fact]
-        public void GetAll_Empty_ShouldReturnEmptyArray()
+        public async Task GetAll_Empty_ShouldReturnEmptyArray()
         {
             // Arrange
-            _mockRepository.Setup(repo => repo.GetAll()).Returns(Array.Empty<User>());
+            _mockRepository.Setup(repo => repo.GetAll()).ReturnsAsync(Array.Empty<User>());
             userService = new UserService(_mockRepository.Object);
 
             // Act
-            var getAllResult = userService.GetAllUsers();
+            var getAllResult = await userService.GetAllUsers();
 
             // Assert
             Assert.Empty(getAllResult);
@@ -119,7 +119,7 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).ReturnsAsync((User)null!);
             _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
@@ -142,7 +142,7 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange
-            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).ReturnsAsync((User)null!);
             userService = new UserService(_mockRepository.Object);
 
             // Act and Assert
@@ -154,7 +154,7 @@ namespace Dot.Net.WebApi.Tests
         {
             var existingUser = mockUsers[0];
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(1)).Returns(existingUser);
+            _mockRepository.Setup(repo => repo.GetById(1)).ReturnsAsync(existingUser);
             _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
@@ -172,7 +172,7 @@ namespace Dot.Net.WebApi.Tests
         {
 
             // Arrange
-            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).ReturnsAsync((User)null!);
             userService = new UserService(_mockRepository.Object);
 
             // Act and assert
@@ -184,7 +184,7 @@ namespace Dot.Net.WebApi.Tests
         {
             var existingUser = mockUsers[0];
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(1)).Returns(existingUser);
+            _mockRepository.Setup(repo => repo.GetById(1)).ReturnsAsync(existingUser);
             _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
@@ -209,7 +209,7 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).ReturnsAsync((User)null!);
             _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
@@ -233,7 +233,7 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).ReturnsAsync((User)null!);
             _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
@@ -257,7 +257,7 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).ReturnsAsync((User)null!);
             _mockRepository.Setup(repo => repo.SaveChangesAsync(default)).ReturnsAsync(1);
             userService = new UserService(_mockRepository.Object);
 
@@ -281,7 +281,7 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(3)).Returns((User)null!);
+            _mockRepository.Setup(repo => repo.GetById(3)).ReturnsAsync((User)null!);
             userService = new UserService(_mockRepository.Object);
 
             // Act
@@ -305,7 +305,7 @@ namespace Dot.Net.WebApi.Tests
 
             var existingUser = mockUsers[0];
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(1)).Returns(existingUser);
+            _mockRepository.Setup(repo => repo.GetById(1)).ReturnsAsync(existingUser);
             userService = new UserService(_mockRepository.Object);
 
             // Act

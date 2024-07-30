@@ -44,7 +44,7 @@ namespace Dot.Net.WebApi.Tests
         // Test Get All Method
 
         [Fact]
-        public void GetAllTrades_Nonempty_ShouldReturnOk()
+        public async Task GetAllTrades_Nonempty_ShouldReturnOk()
         {
 
             // Arrange
@@ -52,29 +52,29 @@ namespace Dot.Net.WebApi.Tests
             controller = new TradeController(_mockService.Object, mockLogger.Object);
 
             // Act
-            var result = controller.GetAllTrades();
+            var result = await controller.GetAllTrades();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var resultTrades = Assert.IsType<List<Trade>>(okResult.Value);
-            Assert.Equal(2, resultTrades.Count);
+            var resultTrades = Assert.IsType<Trade[]>(okResult.Value);
+            Assert.Equal(2, resultTrades.Count());
             Assert.Equal(1.0m, mockTrades[0].BuyQuantity);
         }
 
         [Fact]
-        public void GetAllTrades_Empty_ShouldReturnEmpty()
+        public async Task GetAllTrades_Empty_ShouldReturnEmpty()
         {
 
             // Arrange
-            _mockService.Setup(service => service.GetAllTrades()).ReturnsAsync(mockTrades);
+            _mockService.Setup(service => service.GetAllTrades()).ReturnsAsync(Array.Empty<Trade>());
             controller = new TradeController(_mockService.Object, mockLogger.Object);
 
             // Act
-            var result = controller.GetAllTrades();
+            var result = await controller.GetAllTrades();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var resultTrades = Assert.IsType<List<Trade>>(okResult.Value);
+            var resultTrades = Assert.IsType<Trade[]>(okResult.Value);
             Assert.Empty(resultTrades);
         }
 

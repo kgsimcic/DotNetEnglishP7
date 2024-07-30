@@ -48,7 +48,7 @@ namespace Dot.Net.WebApi.Tests
         // Test GetAllusers Method
 
         [Fact]
-        public void GetAllUsers_Nonempty_ShouldReturnOk()
+        public async Task GetAllUsers_Nonempty_ShouldReturnOk()
         {
 
             // Arrange
@@ -56,16 +56,16 @@ namespace Dot.Net.WebApi.Tests
             controller = new UserController(_mockService.Object, mockLogger.Object);
 
             // Act
-            var result = controller.GetAllUsers();
+            var result = await controller.GetAllUsers();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var resultUsers = Assert.IsType<List<User>>(okResult.Value);
-            Assert.Equal(2, resultUsers.Count);
+            var resultUsers = Assert.IsType<User[]>(okResult.Value);
+            Assert.Equal(2, resultUsers.Count());
         }
 
         [Fact]
-        public void GetAllUsers_Empty_ShouldReturnEmpty()
+        public async Task GetAllUsers_Empty_ShouldReturnEmpty()
         {
 
             // Arrange
@@ -73,11 +73,11 @@ namespace Dot.Net.WebApi.Tests
             controller = new UserController(_mockService.Object, mockLogger.Object);
 
             // Act
-            var result = controller.GetAllUsers();
+            var result = await controller.GetAllUsers();
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var resultUsers = Assert.IsType<List<User>>(okResult.Value);
+            var resultUsers = Assert.IsType<User[]>(okResult.Value);
             Assert.Empty(resultUsers);
         }
 

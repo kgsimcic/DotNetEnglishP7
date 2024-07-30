@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dot.Net.WebApi.Repositories
 {
-    public class UserRepository
+    public class UserRepository : Repository<User>
     {
-        public LocalDbContext DbContext { get; }
-
-        public UserRepository(LocalDbContext dbContext)
+ 
+        public UserRepository(LocalDbContext dbContext):
+            base(dbContext)
         {
             DbContext = dbContext;
         }
@@ -24,34 +24,5 @@ namespace Dot.Net.WebApi.Repositories
                                   .FirstOrDefaultAsync();
         }
 
-        public User[] FindAll()
-        {
-            return DbContext.Users.ToArray();
-        }
-
-        public async Task<int> Create(User user)
-        {
-            DbContext.Users.Add(user);
-            return await DbContext.SaveChangesAsync();
-        }
-
-        public async Task<User> FindById(int id)
-        {
-            return await DbContext.Users.ToAsyncEnumerable()
-                .Where(user => id == user.Id).FirstOrDefaultAsync();
-        }
-
-        public async Task<int> Update(User user)
-        {
-            DbContext.Users.Update(user);
-            return await DbContext.SaveChangesAsync();
-        }
-
-        public async Task<int> Delete(int id) {
-
-            var userToDelete = DbContext.Users.Where(user =>user.Id == id).FirstOrDefault();
-            DbContext.Users.Remove(userToDelete);
-            return await DbContext.SaveChangesAsync();
-        }
     }
 }
