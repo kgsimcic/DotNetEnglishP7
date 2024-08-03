@@ -21,13 +21,6 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-/*        public async Task<TEntity> FindByUserName(string userName)
-        {
-            return await Set().ToAsyncEnumerable()
-                .Where(entity => user.UserName == userName)
-                                  .FirstOrDefaultAsync();
-        }*/
-
         public async Task<TEntity[]> GetAll()
         {
             return await Set().ToArrayAsync();

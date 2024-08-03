@@ -28,7 +28,7 @@ namespace Dot.Net.WebApi.Controllers
         [HttpGet("/secure/article-details")]
         public IActionResult GetAllUserArticles()
         {
-            return View(_userRepository.FindAll());
+            return View(_userRepository.GetAll());
         }
 
         [HttpGet("/error")]

@@ -13,9 +13,9 @@ namespace Dot.Net.WebApi.Services
     public class UserService : IUserService
     {
 
-        protected IRepository<User> _userRepository { get; }
+        protected IUserRepository _userRepository { get; }
 
-        public UserService(IRepository<User> userRepository) {
+        public UserService(IUserRepository userRepository) {
             _userRepository = userRepository;
         }
 
@@ -71,10 +71,10 @@ namespace Dot.Net.WebApi.Services
             return await _userRepository.GetAll();
         }
 
-        /*public async Task<User> GetUserByName(string userName)
+        public async Task<User> GetUserByName(string userName)
         {
-            return await _userRepository.FindByUserName(userName);
-        }*/
+            return await _userRepository.GetByUserName(userName);
+        }
 
         public async Task<Result> CreateUser(User user)
         {

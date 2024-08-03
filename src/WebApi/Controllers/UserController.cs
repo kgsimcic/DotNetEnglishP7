@@ -33,17 +33,18 @@ namespace Dot.Net.WebApi.Controllers
             var users = await _userService.GetAllUsers();
             return Ok(users);
         }
-        /*
-                [HttpGet("/users/{userName}")]
-                public async Task<ActionResult> GetUserByUserName(string userName)
-                {
-                    var user = await _userService.GetUserByName(userName);
 
-                    if (user == null) {
-                        return NotFound();
-                    }
-                    return Ok(user);
-                }*/
+        [HttpGet("/users/{userName}")]
+        public async Task<ActionResult> GetUserByUserName(string userName)
+        {
+            var user = await _userService.GetUserByName(userName);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
 
         [HttpGet("/login")]
         public async Task<ActionResult> Login(string userName, string password)

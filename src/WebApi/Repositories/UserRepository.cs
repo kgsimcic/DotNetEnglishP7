@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dot.Net.WebApi.Repositories
 {
-    public class UserRepository : Repository<User>
+    public class UserRepository : Repository<User>, IUserRepository
     {
  
         public UserRepository(LocalDbContext dbContext):
@@ -17,7 +17,7 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public async Task<User> FindByUserName(string userName)
+        public async Task<User> GetByUserName(string userName)
         {
             return await DbContext.Users.ToAsyncEnumerable()
                 .Where(user => user.UserName == userName)

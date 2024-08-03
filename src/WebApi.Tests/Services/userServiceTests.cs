@@ -14,13 +14,13 @@ namespace Dot.Net.WebApi.Tests
 {
     public class UserServiceTests
     {
-        private readonly Mock<IRepository<User>> _mockRepository;
+        private readonly Mock<IUserRepository> _mockRepository;
         public UserService? userService;
         public User[] mockUsers;
 
         public UserServiceTests()
         {
-            _mockRepository = new Mock<IRepository<User>>();
+            _mockRepository = new Mock<IUserRepository>();
             mockUsers = new User[]
             {
                 new()
