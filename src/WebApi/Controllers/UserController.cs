@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using Dot.Net.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Dot.Net.WebApi.Controllers
 {
@@ -43,6 +44,24 @@ namespace Dot.Net.WebApi.Controllers
                     }
                     return Ok(user);
                 }*/
+
+        [HttpGet("/login")]
+        public async Task<ActionResult> Login(string userName, string password)
+        {
+            _logger.LogInformation("Connected to endpoint /login!");
+
+            var existingUser = await _userService.GetUserByName(userName);
+            if (existingUser != null)
+            {
+                return BadRequest("User with this username does not exist.");
+            }
+            if (password != existingUser.Password)
+            {
+                return BadRequest("Password incorrect.");
+            }
+            // do something with bearer tokens here?
+            return Ok("Successfully logged in!");
+        }
 
         [HttpPost("/users")]
         public async Task<ActionResult> CreateUser([FromBody]User user)
@@ -84,12 +103,12 @@ namespace Dot.Net.WebApi.Controllers
         [HttpPut("/users/{id}")]
         public async Task<ActionResult> UpdateUser(int id, [FromBody] User user)
         {
-            _logger.LogInformation($"Connected to endpoint /users/{id}!");
+            var loggedInUser = this.User.Identity as ClaimsIdentity;
+            _logger.LogInformation($"{loggedInUser.Name} connected to endpoint /users/{id}!");
 
             if (user == null) { return BadRequest("User cannot be null."); }
 
             if (id != user.Id) { return BadRequest("ID in the URL does not match the ID of the user."); }
-
 
             try
             {
@@ -112,7 +131,8 @@ namespace Dot.Net.WebApi.Controllers
         [HttpDelete("/users/{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            _logger.LogInformation($"Connected to endpoint /users/{id}!");
+            var loggedInUser = this.User.Identity as ClaimsIdentity;
+            _logger.LogInformation($"{loggedInUser.Name} Connected to endpoint /users/{id}!");
 
             try
             {

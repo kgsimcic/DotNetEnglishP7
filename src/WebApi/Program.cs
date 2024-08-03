@@ -12,6 +12,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Dot.Net.WebApi.Data;
 using Dot.Net.WebApi.Services;
 using Dot.Net.WebApi.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Dot.Net.WebApi
 {
@@ -26,6 +30,12 @@ namespace Dot.Net.WebApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    // not sure!
+                    services.AddIdentityApiEndpoints<IdentityUser>()
+                    .AddEntityFrameworkStores<LocalDbContext>();
+                    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer("Bearer");
+
                     services.AddScoped<IRepository<User>, Repository<User>>();
                     services.AddScoped<IUserService, UserService>();
                     string connString = hostContext.Configuration.GetConnectionString("DefaultConnection");
