@@ -14,8 +14,8 @@ using Dot.Net.WebApi.Services;
 using Dot.Net.WebApi.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Text;
+using Microsoft.OpenApi.Models;
 
 namespace Dot.Net.WebApi
 {
@@ -30,14 +30,59 @@ namespace Dot.Net.WebApi
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    // not sure!
-                    services.AddIdentityApiEndpoints<IdentityUser>()
-                    .AddEntityFrameworkStores<LocalDbContext>();
-                    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                    .AddJwtBearer("Bearer");
+                    services.AddEndpointsApiExplorer();
+                    services.AddSwaggerGen(c =>
+                    {
+                        c.SwaggerDoc("v1", new() { Title = "First API", Version = "v1" });
+                        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                        {
+                            Description = "JWT Auth header using bearer scheme. Ex: 'Authorization: Bearer {token}'",
+                            Name = "Authorization",
+                            In = ParameterLocation.Header,
+                            Type = SecuritySchemeType.ApiKey,
+                            Scheme = "Bearer"
+                        });
 
-                    services.AddScoped<IRepository<User>, Repository<User>>();
+                        c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                        {
+                            {
+                                new OpenApiSecurityScheme
+                                {
+                                    Reference = new OpenApiReference
+                                    {
+                                        Type = ReferenceType.SecurityScheme,
+                                        Id = "Bearer"
+                                    },
+                                    Scheme = "oauth2",
+                                    Name = "Bearer",
+                                    In = ParameterLocation.Header,
+                                },
+                                new List<string>()
+                            }
+                        });
+                    });
+
+                    // not sure!
+                    // services.AddIdentityApiEndpoints<IdentityUser>()
+                    services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidateLifetime = true,
+                            ValidateIssuerSigningKey = true,
+                            ValidIssuer = hostContext.Configuration["Jwt:Issuer"],
+                            ValidAudience = hostContext.Configuration["Jwt:Audience"],
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(hostContext.Configuration["Jwt:Key"])),
+                            ClockSkew = TimeSpan.Zero
+                        };
+                    });
+
+                    services.AddScoped<IUserRepository, UserRepository>();
                     services.AddScoped<IUserService, UserService>();
+                    services.AddScoped<TokenService>();
                     string connString = hostContext.Configuration.GetConnectionString("DefaultConnection");
                     services.AddDbContext<LocalDbContext>(options =>
                     {

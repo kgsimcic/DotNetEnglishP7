@@ -10,19 +10,28 @@ using Microsoft.Extensions.Logging;
 using Dot.Net.WebApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Primitives;
 
 namespace Dot.Net.WebApi.Controllers
 {
+    public class TokenResponse
+    {
+        public String Token { get; set; }
+    }
+
     [Route("[controller]")]
     [ApiController]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
+        private readonly TokenService _tokenService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, ILogger<UserController> logger)
+        public UserController(IUserService userService, TokenService tokenService, ILogger<UserController> logger)
         {
             _userService = userService;
+            _tokenService = tokenService;
             _logger = logger;
     }
 
@@ -46,49 +55,48 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(user);
         }
 
-        [HttpGet("/login")]
-        public async Task<ActionResult> Login(string userName, string password)
+        [HttpPost("/login")]
+        public async Task<ActionResult> Login(User user)
         {
             _logger.LogInformation("Connected to endpoint /login!");
+            string userName = user.UserName;
+            string password = user.Password;
 
             var existingUser = await _userService.GetUserByName(userName);
-            if (existingUser != null)
+            if (existingUser == null)
             {
                 return BadRequest("User with this username does not exist.");
             }
-            if (password != existingUser.Password)
+            if (!_userService.CheckPassword(existingUser, password))
             {
                 return BadRequest("Password incorrect.");
             }
-            // do something with bearer tokens here?
-            return Ok("Successfully logged in!");
+            // generate token and return it to user
+            string token = _tokenService.CreateToken(existingUser);
+            var response = new TokenResponse
+            {
+                Token = token
+            };
+            return Ok(response);
         }
 
-        [HttpPost("/users")]
-        public async Task<ActionResult> CreateUser([FromBody]User user)
+        [HttpPost("/register")]
+        public async Task<ActionResult> Register([FromBody]User user)
         {
-            _logger.LogInformation("Connected to endpoint /users!");
+            _logger.LogInformation("Connected to endpoint /register!");
 
             if (user == null)
             {
-                return BadRequest("User cannot be null.");
+                return BadRequest("New user cannot be null.");
             }
 
-            // Check if a user with the same ID already exists
-            var existingUser = _userService.GetUserById(user.Id);
-            if (existingUser != null)
-            {
-                Console.WriteLine("Id exists");
-                return Conflict("A user with this ID already exists.");
-            }
             // Check if a user with the same username already exists
-            
-            /*existingUser = await _userService.GetUserByName(user.UserName);
-            if (existingUser != null)
+            var existingUser2 = await _userService.GetUserByName(user.UserName);
+            if (existingUser2 != null)
             {
                 Console.WriteLine("Username exists");
                 return Conflict("A user with this username already exists.");
-            }*/
+            }
 
             var result = await _userService.CreateUser(user);
 
@@ -110,6 +118,7 @@ namespace Dot.Net.WebApi.Controllers
             if (user == null) { return BadRequest("User cannot be null."); }
 
             if (id != user.Id) { return BadRequest("ID in the URL does not match the ID of the user."); }
+
 
             try
             {

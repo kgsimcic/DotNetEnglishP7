@@ -17,12 +17,14 @@ namespace Dot.Net.WebApi.Repositories
             DbContext = dbContext;
         }
 
-        public async Task<User> GetByUserName(string userName)
+#nullable enable
+        public async Task<User?> GetByUserName(string userName)
         {
             return await DbContext.Users.ToAsyncEnumerable()
                 .Where(user => user.UserName == userName)
                                   .FirstOrDefaultAsync();
         }
+# nullable disable
 
     }
 }

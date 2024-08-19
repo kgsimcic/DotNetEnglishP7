@@ -34,6 +34,7 @@ namespace Dot.Net.WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
             }
 
             app.UseHttpsRedirection();

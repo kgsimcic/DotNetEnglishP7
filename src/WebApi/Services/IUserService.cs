@@ -16,5 +16,6 @@ namespace Dot.Net.WebApi.Services
         Task<Result> CreateUser(User user);
         Task<Result> UpdateUser(int id, User user);
         Task<int> DeleteUser(int id);
+        bool CheckPassword(User user, string password);
     }
 }

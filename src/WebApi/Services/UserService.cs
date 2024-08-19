@@ -7,11 +7,34 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore.Query;
 using System;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace Dot.Net.WebApi.Services
 {
     public class UserService : IUserService
     {
+        // Found it on the internet!
+        public static byte[] Hash(string value, byte[] salt)
+        {
+            return Hash(Encoding.UTF8.GetBytes(value), salt);
+        }
+
+        public static byte[] Hash(byte[] value, byte[] salt)
+        {
+            byte[] saltedValue = value.Concat(salt).ToArray();
+            // Alternatively use CopyTo.
+            //var saltedValue = new byte[value.Length + salt.Length];
+            //value.CopyTo(saltedValue, 0);
+            //salt.CopyTo(saltedValue, value.Length);
+
+            return SHA256.Create().ComputeHash(saltedValue);
+        }
+
+        public bool CheckPassword(User user, string password)
+        {
+            return user.Password == Convert.ToBase64String(Hash(password, user.Salt));
+        }
 
         protected IUserRepository _userRepository { get; }
 
@@ -71,11 +94,6 @@ namespace Dot.Net.WebApi.Services
             return await _userRepository.GetAll();
         }
 
-        public async Task<User> GetUserByName(string userName)
-        {
-            return await _userRepository.GetByUserName(userName);
-        }
-
         public async Task<Result> CreateUser(User user)
         {
             var validationResult = ValidateUser(user);
@@ -84,6 +102,11 @@ namespace Dot.Net.WebApi.Services
             {
                 return validationResult;
             }
+            // generates a salt and hashes the user's password with the salt.
+            byte[] salt = new byte[32];
+            string hashedPassword = Convert.ToBase64String(Hash(user.Password, salt));
+            user.Password = hashedPassword;
+            user.Salt = salt;
 
             _userRepository.Add(user);
             await _userRepository.SaveChangesAsync();
@@ -106,6 +129,13 @@ namespace Dot.Net.WebApi.Services
                 return validationResult;
             }
 
+            // Add hashing and salt generation here
+            // generates a salt and hashes the user's password with the salt.
+            byte[] salt = new byte[32];
+            string hashedPassword = Convert.ToBase64String(Hash(user.Password, salt));
+            user.Password = hashedPassword;
+            user.Salt = salt;
+
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
             return validationResult;
@@ -127,6 +157,10 @@ namespace Dot.Net.WebApi.Services
         public async Task<User?> GetUserById(int id)
         {
             return await _userRepository.GetById(id);
+        }
+        public async Task<User?> GetUserByName(string userName)
+        {
+            return await _userRepository.GetByUserName(userName);
         }
 # nullable disable
     }
