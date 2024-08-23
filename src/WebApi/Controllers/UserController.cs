@@ -13,6 +13,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using Microsoft.Extensions.Configuration;
 
 namespace Dot.Net.WebApi.Controllers
 {
@@ -25,15 +26,18 @@ namespace Dot.Net.WebApi.Controllers
     [ApiController]
     public class UserController : Controller
     {
+
         private readonly IUserService _userService;
         private readonly TokenService _tokenService;
         private readonly ILogger<UserController> _logger;
+        private readonly IConfiguration _configuration;
 
-        public UserController(IUserService userService, TokenService tokenService, ILogger<UserController> logger)
+        public UserController(IUserService userService, TokenService tokenService, ILogger<UserController> logger, IConfiguration configuration)
         {
             _userService = userService;
             _tokenService = tokenService;
             _logger = logger;
+            _configuration = configuration;
     }
 
         [HttpGet("/users")]
@@ -129,7 +133,7 @@ namespace Dot.Net.WebApi.Controllers
 
             if (user == null) { return BadRequest("User cannot be null."); }
 
-            if (id != user.Id) { return BadRequest("ID in the URL does not match the ID of the user."); }
+            if (id != user.Id) { return BadRequest("ID in the URI does not match the ID of the user."); }
 
             try
             {
@@ -153,6 +157,7 @@ namespace Dot.Net.WebApi.Controllers
         {
             var loggedInUser = this.User.Identity as ClaimsIdentity;
             _logger.LogInformation($"{loggedInUser.Name} Connected to endpoint /users/{id}!");
+
 
             // test if token is valid/attached
             const string HeaderKeyName = "Bearer";

@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Options;
 
 namespace Dot.Net.WebApi
 {
@@ -63,7 +65,6 @@ namespace Dot.Net.WebApi
                     });
 
                     // not sure!
-                    // services.AddIdentityApiEndpoints<IdentityUser>()
                     services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {

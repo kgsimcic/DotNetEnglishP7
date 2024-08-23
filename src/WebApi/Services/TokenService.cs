@@ -6,31 +6,36 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace Dot.Net.WebApi.Services
 {
     public class TokenService
     {
-        private IConfiguration _configuration;
+        private IConfiguration Configuration;
+
         public TokenService(IConfiguration configuration) {
-            _configuration = configuration;
+            Configuration = configuration;
+
         }
 
         public string CreateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
+
+            var key = Encoding.ASCII.GetBytes(this.Configuration["Jwt:Key"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                    new Claim(ClaimTypes.Role, user.Role)
-                }),
+                    new Claim(ClaimTypes.Role, user.Role),
+                    new Claim(ClaimTypes.Name, user.Id.ToString())
+            }),
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
-                Issuer = _configuration["JwtIssuer"],
-                Audience = _configuration["Jwt:Audience"]
+                Issuer = this.Configuration["Jwt:Issuer"],
+                Audience = this.Configuration["Jwt:Audience"]
             };
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -44,21 +49,26 @@ namespace Dot.Net.WebApi.Services
                 return null;
             }
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>(
-                "Jwt:Key"));
+            var key = Encoding.ASCII.GetBytes(this.Configuration["Jwt:Key"]);
             try
             {
+                var audience = this.Configuration["Jwt:Audience"];
+                var issuer = this.Configuration["Jwt:Issuer"];
+
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
+                    ValidateIssuer = true,
                     ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.Configuration["Jwt:Key"])),
                     ClockSkew = TimeSpan.Zero
                 }, out SecurityToken validatedToken);
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
+                var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "unique_name").Value);
                 return userId;
             }
             catch
