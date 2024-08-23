@@ -12,12 +12,13 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace Dot.Net.WebApi.Controllers
 {
     public class TokenResponse
     {
-        public String Token { get; set; }
+        public String Bearer { get; set; }
     }
 
     [Route("[controller]")]
@@ -75,7 +76,7 @@ namespace Dot.Net.WebApi.Controllers
             string token = _tokenService.CreateToken(existingUser);
             var response = new TokenResponse
             {
-                Token = token
+                Bearer = token
             };
             return Ok(response);
         }
@@ -108,17 +109,27 @@ namespace Dot.Net.WebApi.Controllers
             return Created($"user/{user.Id}", user);
         }
 
-        [Authorize]
         [HttpPut("/users/{id}")]
         public async Task<ActionResult> UpdateUser(int id, [FromBody] User user)
         {
-            var loggedInUser = this.User.Identity as ClaimsIdentity;
-            _logger.LogInformation($"{loggedInUser.Name} connected to endpoint /users/{id}!");
+            // test if token is valid/attached
+            const string HeaderKeyName = "Bearer";
+            Request.Headers.TryGetValue(HeaderKeyName, out StringValues headerValue);
+            int? validatedUser = _tokenService.ValidateToken(headerValue);
+            if (validatedUser == null) {
+                return Unauthorized("Please log in before editing user info.");
+            }
+            int userId = validatedUser.Value;
+
+            // test that request parameters match user and claim matches user edited
+            if (userId != user.Id)
+            {
+                return Unauthorized("You cannot edit user information that is not your own.");
+            }
 
             if (user == null) { return BadRequest("User cannot be null."); }
 
             if (id != user.Id) { return BadRequest("ID in the URL does not match the ID of the user."); }
-
 
             try
             {
@@ -137,12 +148,27 @@ namespace Dot.Net.WebApi.Controllers
 
         }
 
-        [Authorize]
         [HttpDelete("/users/{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
             var loggedInUser = this.User.Identity as ClaimsIdentity;
             _logger.LogInformation($"{loggedInUser.Name} Connected to endpoint /users/{id}!");
+
+            // test if token is valid/attached
+            const string HeaderKeyName = "Bearer";
+            Request.Headers.TryGetValue(HeaderKeyName, out StringValues headerValue);
+            int? validatedUser = _tokenService.ValidateToken(headerValue);
+            if (validatedUser == null)
+            {
+                return Unauthorized("Please log in before deleting user info.");
+            }
+            int userId = validatedUser.Value;
+
+            // test that request parameters match user and claim matches user edited
+            if (userId != id)
+            {
+                return Unauthorized("You cannot delete user information that is not your own.");
+            }
 
             try
             {

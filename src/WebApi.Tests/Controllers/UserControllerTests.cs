@@ -10,19 +10,23 @@ using System.Collections.Generic;
 using Dot.Net.WebApi.Domain;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace Dot.Net.WebApi.Tests
 {
     public class UserControllerTests
     {
         private readonly Mock<IUserService> _mockService;
+        private readonly TokenService _tokenService;
         public UserController? controller;
+        private IConfiguration _configuration;
         public User[] mockUsers;
         public Mock<ILogger<UserController>> mockLogger;
 
         public UserControllerTests()
         {
             _mockService = new Mock<IUserService>();
+            _tokenService = new TokenService(_configuration);
             mockUsers = new User[]
             {
                 new()
@@ -53,7 +57,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Arrange
             _mockService.Setup(service => service.GetAllUsers()).ReturnsAsync(mockUsers);
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
             var result = await controller.GetAllUsers();
@@ -70,7 +74,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Arrange
             _mockService.Setup(service => service.GetAllUsers()).ReturnsAsync(Array.Empty<User>());
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
             var result = await controller.GetAllUsers();
@@ -119,13 +123,13 @@ namespace Dot.Net.WebApi.Tests
         // Test CreateUser method
 
         [Fact]
-        public async Task CreateUser_Null_ShouldReturnBadRequest()
+        public async Task Register_Null_ShouldReturnBadRequest()
         {
             // Arrange -- no setup required because controller handles this logic and does not call the service
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
-            var result = await controller.CreateUser(null);
+            var result = await controller.Register(null);
 
             // Assert
             var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(result);
@@ -133,16 +137,16 @@ namespace Dot.Net.WebApi.Tests
         }
 
         [Fact]
-        public async Task CreateUser_AlreadyExists_ShouldReturnConflict()
+        public async Task Register_AlreadyExists_ShouldReturnConflict()
         {
 
             // Arrange
             var existingUser = mockUsers.First();
             _mockService.Setup(service => service.GetUserById(existingUser.Id)).ReturnsAsync(existingUser);
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
-            var result = await controller.CreateUser(existingUser);
+            var result = await controller.Register(existingUser);
 
             // Assert
             var conflictObjectResult = Assert.IsType<ConflictObjectResult>(result);
@@ -150,21 +154,21 @@ namespace Dot.Net.WebApi.Tests
         }
 
         [Fact]
-        public async Task CreateUser_Valid_ShouldReturnCreated()
+        public async Task Register_Valid_ShouldReturnCreated()
         {
             // Arrange
             User newUser = new()
             {
                 Id = 3,
                 UserName = "NewUser",
-                Password = "pwd"
+                Password = "Pwd@@44long"
             };
             _mockService.Setup(service => service.GetUserById(newUser.Id)).ReturnsAsync((User)null!);
             _mockService.Setup(service => service.CreateUser(newUser)).ReturnsAsync(Result.Success);
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
-            var result = await controller.CreateUser(newUser);
+            var result = await controller.Register(newUser);
 
             // Assert
             var createdResult = Assert.IsType<CreatedResult>(result);
@@ -178,7 +182,7 @@ namespace Dot.Net.WebApi.Tests
         {
 
             // Arrange -- no setup required because controller handles this logic and does not call the service
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act - gave value of 1 for id because it does not matter - regardless of id value, method will produce error
             // if updated user is null
@@ -201,7 +205,7 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange -- no setup required because controller handles this logic and does not call the service
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act - gave value of 1 for id because it does not matter - regardless of id value, method will produce error
             // if updated user is null
@@ -225,7 +229,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Arrange
             _mockService.Setup(service => service.UpdateUser(updateUser.Id, updateUser)).ThrowsAsync(new KeyNotFoundException());
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
             var result = await controller.UpdateUser(updateUser.Id, updateUser);
@@ -244,10 +248,10 @@ namespace Dot.Net.WebApi.Tests
             {
                 Id = 1,
                 UserName = "NewUser",
-                Password = "pwd"
+                Password = "Pwd@@44long"
             };
             _mockService.Setup(service => service.UpdateUser(updateUser.Id, updateUser)).ReturnsAsync(Result.Success);
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
             var result = await controller.UpdateUser(updateUser.Id, updateUser);
@@ -265,7 +269,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Arrange
             _mockService.Setup(service => service.DeleteUser(3)).ThrowsAsync(new KeyNotFoundException());
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
             var result = await controller.DeleteUser(3);
@@ -281,7 +285,7 @@ namespace Dot.Net.WebApi.Tests
         {
             // Arrange
             _mockService.Setup(service => service.DeleteUser(1)).ReturnsAsync(1);
-            controller = new UserController(_mockService.Object, mockLogger.Object);
+            controller = new UserController(_mockService.Object, _tokenService, mockLogger.Object);
 
             // Act
             var result = await controller.DeleteUser(1);

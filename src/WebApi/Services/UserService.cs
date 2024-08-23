@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Linq;
 using Microsoft.EntityFrameworkCore.Query;
 using System;
-using Microsoft.AspNetCore.Mvc;
 using System.Text;
 using System.Security.Cryptography;
 
@@ -91,7 +90,11 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<User[]> GetAllUsers()
         {
-            return await _userRepository.GetAll();
+            var users = await _userRepository.GetAll();
+
+            // .Select(i => new { i.category_id, i.category_name })
+
+            return users;
         }
 
         public async Task<Result> CreateUser(User user)
