@@ -53,7 +53,7 @@ namespace Dot.Net.WebApi.Controllers
             }
 
             // Check if a user with the same ID already exists
-            var existingTrade = _tradeService.GetTrade(trade.TradeId);
+            var existingTrade = await _tradeService.GetTrade(trade.TradeId);
             if (existingTrade != null)
             {
                 return Conflict("A trade with this ID already exists.");
@@ -68,13 +68,6 @@ namespace Dot.Net.WebApi.Controllers
 
             return Created($"trade/{trade.TradeId}", trade);
         }
-
-        /*[HttpGet("/trade/update/{id}")]
-        public IActionResult ShowUpdateForm(int id)
-        {
-            // TODO: get Trade by Id and to model then show to the form
-            return View("trade/update");
-        }*/
 
         [HttpPut("/trades/{id}")]
         public async Task<ActionResult> UpdateTrade(int id, [FromBody] Trade trade)

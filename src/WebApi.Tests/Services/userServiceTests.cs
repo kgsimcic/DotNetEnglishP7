@@ -76,11 +76,11 @@ namespace Dot.Net.WebApi.Tests
 
         // Test GetUserByName method
 
-/*        [Fact]
+        [Fact]
         public async Task GetUserByName_ShouldReturnUser()
         {
             // Arrange
-            _mockRepository.Setup(repo => repo.FindByUserName("Admin")).ReturnsAsync(mockUsers[0]);
+            _mockRepository.Setup(repo => repo.GetByUserName("Admin")).ReturnsAsync(mockUsers[0]);
             userService = new UserService(_mockRepository.Object);
 
             // Act
@@ -89,13 +89,13 @@ namespace Dot.Net.WebApi.Tests
             // Assert
             Assert.Equal("Admin", getResult.UserName);
             Assert.IsType<User>(getResult);
-        }*/
+        }
 
-/*        [Fact]
+        [Fact]
         public async Task GetUserByName_NotFound_ShouldReturnNull()
         {
             // Arrange
-            _mockRepository.Setup(repo => repo.FindByUserName("NotFound")).ReturnsAsync((User)null!);
+            _mockRepository.Setup(repo => repo.GetByUserName("NotFound")).ReturnsAsync((User)null!);
             userService = new UserService(_mockRepository.Object);
 
             // Act
@@ -103,8 +103,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Assert
             Assert.Null(getResult);
-            Assert.IsType<User>(getResult);
-        }*/
+        }
 
         // Test Create User method
 

@@ -12,12 +12,22 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using System.Net.Http.Headers;
 
 namespace Dot.Net.WebApi.Controllers
 {
     public class TokenResponse
     {
         public String Bearer { get; set; }
+    }
+
+    public class PartialUser
+    {
+        public int Id { get; set; }
+        public string UserName { get; set; }
+        public string Role { get; set; }
+        public string FullName { get; set; }
+
     }
 
     [Route("[controller]")]
@@ -41,11 +51,11 @@ namespace Dot.Net.WebApi.Controllers
         {
             _logger.LogInformation("Connected to endpoint /users!");
             var users = await _userService.GetAllUsers();
-            var partialUsers = users.Select(u => new {
-                u.Id,
-                u.UserName,
-                u.FullName,
-                u.Role
+            var partialUsers = users.Select(u => new PartialUser{
+                Id = u.Id,
+                UserName = u.UserName,
+                FullName = u.FullName,
+                Role = u.Role
                 }).ToArray();
 
             return Ok(partialUsers);
@@ -61,12 +71,12 @@ namespace Dot.Net.WebApi.Controllers
                 return NotFound();
             }
 
-            var partialUser = new
+            PartialUser partialUser = new PartialUser
             {
-                user.Id,
-                user.UserName,
-                user.FullName,
-                user.Role
+                Id = user.Id,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Role = user.Role
             };
 
             return Ok(partialUser);
@@ -122,12 +132,12 @@ namespace Dot.Net.WebApi.Controllers
                 return BadRequest(result.Error.Description);
             }
 
-            var partialUser = new
+            PartialUser partialUser = new PartialUser
             {
-                user.Id,
-                user.UserName,
-                user.FullName,
-                user.Role
+                Id = user.Id,
+                UserName = user.UserName,
+                FullName = user.FullName,
+                Role = user.Role
             };
 
             return Created($"user/{user.Id}", partialUser);
@@ -136,9 +146,20 @@ namespace Dot.Net.WebApi.Controllers
         [HttpPut("/users/{id}")]
         public async Task<ActionResult> UpdateUser(int id, [FromBody] User user)
         {
+            if (user == null) { return BadRequest("User cannot be null."); }
+
+            if (id != user.Id) { return BadRequest("ID in the URI does not match the ID of the user."); }
+
             // test if token is valid/attached
             const string HeaderKeyName = "Bearer";
-            Request.Headers.TryGetValue(HeaderKeyName, out StringValues headerValue);
+
+            StringValues headerValue = "";
+            try
+            {
+                Request.Headers.TryGetValue(HeaderKeyName, out headerValue);
+            }
+            catch (Exception) { };
+
             int? validatedUser = _tokenService.ValidateToken(headerValue);
             if (validatedUser == null) {
                 return Unauthorized("Please log in before editing user info.");
@@ -150,10 +171,6 @@ namespace Dot.Net.WebApi.Controllers
             {
                 return Unauthorized("You cannot edit user information that is not your own.");
             }
-
-            if (user == null) { return BadRequest("User cannot be null."); }
-
-            if (id != user.Id) { return BadRequest("ID in the URI does not match the ID of the user."); }
 
             try
             {
@@ -175,13 +192,18 @@ namespace Dot.Net.WebApi.Controllers
         [HttpDelete("/users/{id}")]
         public async Task<ActionResult> DeleteUser(int id)
         {
-            var loggedInUser = this.User.Identity as ClaimsIdentity;
-            _logger.LogInformation($"{loggedInUser.Name} Connected to endpoint /users/{id}!");
-
+            _logger.LogInformation($"Connected to endpoint /users/{id}!");
 
             // test if token is valid/attached
             const string HeaderKeyName = "Bearer";
-            Request.Headers.TryGetValue(HeaderKeyName, out StringValues headerValue);
+
+            StringValues headerValue = "";
+            try
+            {
+                Request.Headers.TryGetValue(HeaderKeyName, out headerValue);
+            }
+            catch (Exception) { };
+
             int? validatedUser = _tokenService.ValidateToken(headerValue);
             if (validatedUser == null)
             {

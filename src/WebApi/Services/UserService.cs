@@ -115,7 +115,8 @@ namespace Dot.Net.WebApi.Services
         public async Task<Result> UpdateUser(int id, User user)
         {
 
-            var existingUser = _userRepository.GetById(id);
+            var existingUser = await _userRepository.GetById(id);
+
             if (existingUser == null)
             {
                 throw new KeyNotFoundException("User not found.");

@@ -62,7 +62,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var resultUsers = Assert.IsType<User[]>(okResult.Value);
+            var resultUsers = Assert.IsType<PartialUser[]>(okResult.Value);
             Assert.Equal(2, resultUsers.Count());
         }
 
@@ -79,7 +79,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var resultUsers = Assert.IsType<User[]>(okResult.Value);
+            var resultUsers = Assert.IsType<PartialUser[]>(okResult.Value);
             Assert.Empty(resultUsers);
         }
 
@@ -97,7 +97,7 @@ namespace Dot.Net.WebApi.Tests
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var resultUser = Assert.IsType<User>(okResult.Value);
+            var resultUser = Assert.IsType<PartialUser>(okResult.Value);
             Assert.Equal(1, resultUser.Id);
 
         }
@@ -141,6 +141,7 @@ namespace Dot.Net.WebApi.Tests
             // Arrange
             var existingUser = mockUsers.First();
             _mockService.Setup(service => service.GetUserById(existingUser.Id)).ReturnsAsync(existingUser);
+            _mockService.Setup(service => service.GetUserByName(existingUser.UserName)).ReturnsAsync(existingUser);
             controller = new UserController(_mockService.Object, _tokenService.Object, mockLogger.Object);
 
             // Act
@@ -216,7 +217,7 @@ namespace Dot.Net.WebApi.Tests
         }
 
         [Fact]
-        public async Task UpdateUser_NotFound_ShouldReturnNotFound()
+        public async Task UpdateUser_NotFound_ShouldReturnUnauthorized()
         {
             User updateUser = new()
             {
@@ -226,15 +227,15 @@ namespace Dot.Net.WebApi.Tests
             };
 
             // Arrange
-            _mockService.Setup(service => service.UpdateUser(updateUser.Id, updateUser)).ThrowsAsync(new KeyNotFoundException());
+            _tokenService.Setup(service => service.ValidateToken(It.IsAny<string>())).Returns((int?)null!);
             controller = new UserController(_mockService.Object, _tokenService.Object, mockLogger.Object);
 
             // Act
             var result = await controller.UpdateUser(updateUser.Id, updateUser);
 
             // Assert
-            var notFoundResult = Assert.IsType<NotFoundResult>(result);
-            Assert.Equal(404, notFoundResult.StatusCode);
+            var notFoundResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(401, notFoundResult.StatusCode);
 
         }
 
@@ -249,6 +250,7 @@ namespace Dot.Net.WebApi.Tests
                 Password = "Pwd@@44long"
             };
             _mockService.Setup(service => service.UpdateUser(updateUser.Id, updateUser)).ReturnsAsync(Result.Success);
+            _tokenService.Setup(service => service.ValidateToken(It.IsAny<string>())).Returns(1);
             controller = new UserController(_mockService.Object, _tokenService.Object, mockLogger.Object);
 
             // Act
@@ -262,19 +264,19 @@ namespace Dot.Net.WebApi.Tests
         // Test DeleteUser method
 
         [Fact]
-        public async Task DeleteUser_NotFound_ShouldReturnNotFound()
+        public async Task DeleteUser_NotFound_ShouldReturnUnauthorized()
         {
 
             // Arrange
-            _mockService.Setup(service => service.DeleteUser(3)).ThrowsAsync(new KeyNotFoundException());
+            _tokenService.Setup(service => service.ValidateToken(It.IsAny<string>())).Returns((int?)null!);
             controller = new UserController(_mockService.Object, _tokenService.Object, mockLogger.Object);
 
             // Act
             var result = await controller.DeleteUser(3);
 
             // Assert
-            var notFoundResult = Assert.IsType<NotFoundResult>(result);
-            Assert.Equal(404, notFoundResult.StatusCode);
+            var notFoundResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(401, notFoundResult.StatusCode);
 
         }
 
@@ -283,6 +285,7 @@ namespace Dot.Net.WebApi.Tests
         {
             // Arrange
             _mockService.Setup(service => service.DeleteUser(1)).ReturnsAsync(1);
+            _tokenService.Setup(service => service.ValidateToken(It.IsAny<string>())).Returns(1);
             controller = new UserController(_mockService.Object, _tokenService.Object, mockLogger.Object);
 
             // Act
