@@ -90,11 +90,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<User[]> GetAllUsers()
         {
-            var users = await _userRepository.GetAll();
-
-            // .Select(i => new { i.category_id, i.category_name })
-
-            return users;
+            return await _userRepository.GetAll();
         }
 
         public async Task<Result> CreateUser(User user)

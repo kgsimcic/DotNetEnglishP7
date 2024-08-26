@@ -45,7 +45,14 @@ namespace Dot.Net.WebApi.Controllers
         {
             _logger.LogInformation("Connected to endpoint /users!");
             var users = await _userService.GetAllUsers();
-            return Ok(users);
+            var partialUsers = users.Select(u => new {
+                u.Id,
+                u.UserName,
+                u.FullName,
+                u.Role
+                }).ToArray();
+
+            return Ok(partialUsers);
         }
 
         [HttpGet("/users/{userName}")]
@@ -57,7 +64,16 @@ namespace Dot.Net.WebApi.Controllers
             {
                 return NotFound();
             }
-            return Ok(user);
+
+            var partialUser = new
+            {
+                user.Id,
+                user.UserName,
+                user.FullName,
+                user.Role
+            };
+
+            return Ok(partialUser);
         }
 
         [HttpPost("/login")]
@@ -110,7 +126,15 @@ namespace Dot.Net.WebApi.Controllers
                 return BadRequest(result.Error.Description);
             }
 
-            return Created($"user/{user.Id}", user);
+            var partialUser = new
+            {
+                user.Id,
+                user.UserName,
+                user.FullName,
+                user.Role
+            };
+
+            return Created($"user/{user.Id}", partialUser);
         }
 
         [HttpPut("/users/{id}")]
