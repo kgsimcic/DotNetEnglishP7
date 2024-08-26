@@ -56,33 +56,33 @@ namespace Dot.Net.WebApi.Services
         public async Task<int> DeleteRule(int id)
         {
             var existingRule = await _ruleRepository.GetById(id);
-            if (existingRule == null)
+            if (existingRule != null)
             {
-                throw new KeyNotFoundException("Rule not found.");
+                _ruleRepository.Delete(existingRule);
+                return await _ruleRepository.SaveChangesAsync();
             }
 
-            _ruleRepository.Delete(existingRule);
-            return await _ruleRepository.SaveChangesAsync();
+            throw new KeyNotFoundException("Rule not found.");
         }
 
         public async Task<Result> UpdateRule(int id, Rule rule)
         {
             var existingRule = _ruleRepository.GetById(id);
-            if (existingRule == null)
+            if (existingRule != null)
             {
-                throw new KeyNotFoundException("Rule not found.");
-            }
+                var validationResult = ValidateRule(rule);
 
-            var validationResult = ValidateRule(rule);
+                if (!validationResult.IsSuccess)
+                {
+                    return validationResult;
+                }
 
-            if (!validationResult.IsSuccess)
-            {
+                _ruleRepository.Update(rule);
+                await _ruleRepository.SaveChangesAsync();
                 return validationResult;
             }
 
-            _ruleRepository.Update(rule);
-            await _ruleRepository.SaveChangesAsync();
-            return validationResult;
+            throw new KeyNotFoundException("Rule not found.");
         }
     }
 }

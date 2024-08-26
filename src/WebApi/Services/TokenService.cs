@@ -10,13 +10,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace Dot.Net.WebApi.Services
 {
-    public class TokenService
+    public class TokenService : ITokenService
     {
-        private IConfiguration Configuration;
+        private readonly IConfiguration Configuration;
 
         public TokenService(IConfiguration configuration) {
             Configuration = configuration;
-
         }
 
         public string CreateToken(User user)

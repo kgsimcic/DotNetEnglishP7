@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dot.Net.WebApi.Domain;
-using Dot.Net.WebApi.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
@@ -13,7 +12,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Extensions.Configuration.UserSecrets;
-using Microsoft.Extensions.Configuration;
 
 namespace Dot.Net.WebApi.Controllers
 {
@@ -28,16 +26,14 @@ namespace Dot.Net.WebApi.Controllers
     {
 
         private readonly IUserService _userService;
-        private readonly TokenService _tokenService;
+        private readonly ITokenService _tokenService;
         private readonly ILogger<UserController> _logger;
-        private readonly IConfiguration _configuration;
 
-        public UserController(IUserService userService, TokenService tokenService, ILogger<UserController> logger, IConfiguration configuration)
+        public UserController(IUserService userService, ITokenService tokenService, ILogger<UserController> logger)
         {
             _userService = userService;
             _tokenService = tokenService;
             _logger = logger;
-            _configuration = configuration;
     }
 
         [HttpGet("/users")]
