@@ -85,7 +85,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<Result> UpdateTrade(int id, Trade trade)
         {
-            var existingTrade = _tradeRepository.GetById(id);
+            var existingTrade = await _tradeRepository.GetById(id);
             if (existingTrade == null)
             {
                 throw new KeyNotFoundException("Trade not found.");

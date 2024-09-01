@@ -57,7 +57,7 @@ namespace Dot.Net.WebApi.Controllers
                 return BadRequest("Rule cannot be null.");
             }
 
-            var existingRule = _ruleService.GetRule(rule.Id);
+            var existingRule = await _ruleService.GetRule(rule.Id);
             if (existingRule != null)
             {
                 return Conflict("A rule with this ID already exists.");
