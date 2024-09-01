@@ -19,7 +19,7 @@ namespace Dot.Net.WebApi.Controllers
         private readonly ICurvePointService _curvePointService;
         private readonly ILogger<CurvePointController> _logger;
 
-        CurvePointController(ICurvePointService curvePointService, ILogger<CurvePointController> logger)
+        public CurvePointController(ICurvePointService curvePointService, ILogger<CurvePointController> logger)
         {
             _curvePointService = curvePointService;
             _logger = logger;
@@ -58,7 +58,7 @@ namespace Dot.Net.WebApi.Controllers
                 return BadRequest("Curve point cannot be null.");
             }
 
-            var existingCurvePoint = _curvePointService.GetCurvePoint(curvePoint.Id);
+            var existingCurvePoint = await _curvePointService.GetCurvePoint(curvePoint.Id);
             if (existingCurvePoint != null)
             {
                 return Conflict("A curve point with this ID already exists.");

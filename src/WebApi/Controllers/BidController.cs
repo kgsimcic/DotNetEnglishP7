@@ -63,7 +63,7 @@ namespace Dot.Net.WebApi.Controllers
                 return BadRequest("Bid cannot be null.");
             }
 
-            var existingBid = _bidService.GetBid(bid.BidListId);
+            var existingBid = await _bidService.GetBid(bid.BidListId);
             if (existingBid != null)
             {
                 return Conflict("A bid with this ID already exists.");

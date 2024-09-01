@@ -53,7 +53,7 @@ namespace Dot.Net.WebApi.Controllers
                 return BadRequest("Rating cannot be null.");
             }
 
-            var existingRating = _ratingService.GetRating(rating.Id);
+            var existingRating = await _ratingService.GetRating(rating.Id);
             if (existingRating != null)
             {
                 return Conflict("A rating with this ID already exists.");
