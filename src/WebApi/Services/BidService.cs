@@ -23,25 +23,25 @@ namespace  Dot.Net.WebApi.Services
             if (decimal.IsNegative(bid.BidQuantity))
             {
                 return Result.Failure(
-                    new Error("bid.BidQuantityNegative", "Bid Quantity cannot be negative."));
+                    new Error("Bid.BidQuantityNegative", "Bid Quantity cannot be negative."));
             }
             // Validate ask quantity
             if (decimal.IsNegative(bid.AskQuantity))
             {
                 return Result.Failure(
-                    new Error("bid.AskQuantityNegative", "Bid Ask Quantity Term cannot be negative."));
+                    new Error("Bid.AskQuantityNegative", "Bid Ask Quantity Term cannot be negative."));
             }
             // Validate bid amount
             if (decimal.IsNegative(bid.BidAmount))
             {
                 return Result.Failure(
-                    new Error("bid.BidAmountNegative", "Bid Amount cannot be negative."));
+                    new Error("Bid.BidAmountNegative", "Bid Amount cannot be negative."));
             }
             // Validate ask
             if (decimal.IsNegative(bid.Ask))
             {
                 return Result.Failure(
-                    new Error("bid.AskNegative", "Bid Ask Amount cannot be negative."));
+                    new Error("Bid.AskNegative", "Bid Ask Amount cannot be negative."));
             }
 
             return Result.Success();
@@ -86,7 +86,7 @@ namespace  Dot.Net.WebApi.Services
 
         public async Task<Result> UpdateBid(int id,Bid bid)
         {
-            var existingBid = _bidRepository.GetById(id);
+            var existingBid = await _bidRepository.GetById(id);
             if (existingBid == null)
             {
                 throw new KeyNotFoundException("Bid not found.");

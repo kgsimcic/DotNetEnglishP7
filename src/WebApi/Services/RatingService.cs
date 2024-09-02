@@ -23,7 +23,7 @@ namespace Dot.Net.WebApi.Services
             if (int.IsNegative(rating.OrderNumber))
             {
                 return Result.Failure(
-                    new Error("rating.OrderNumberNegative", "Order Number cannot be negative."));
+                    new Error("Rating.OrderNumberNegative", "Order Number cannot be negative."));
             }
 
             return Result.Success();
@@ -68,7 +68,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<Result> UpdateRating(int id, Rating rating)
         {
-            var existingRating = _ratingRepository.GetById(id);
+            var existingRating = await _ratingRepository.GetById(id);
             if (existingRating == null)
             {
                 throw new KeyNotFoundException("Rating not found.");

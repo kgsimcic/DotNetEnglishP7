@@ -67,7 +67,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<Result> UpdateRule(int id, Rule rule)
         {
-            var existingRule = _ruleRepository.GetById(id);
+            var existingRule = await _ruleRepository.GetById(id);
             if (existingRule != null)
             {
                 var validationResult = ValidateRule(rule);

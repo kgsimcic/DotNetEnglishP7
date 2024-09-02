@@ -23,21 +23,21 @@ namespace Dot.Net.WebApi.Services
             if (curvePoint.CurveId < 1)
             {
                 return Result.Failure(
-                    new Error("curvePoint.CurveIdNegOrZero", "CurvePoint CurveID cannot be negative or zero."));
+                    new Error("CurvePoint.CurveIdNegOrZero", "CurvePoint CurveID cannot be negative or zero."));
             }
 
             // Validate curvePoint term
             if (decimal.IsNegative(curvePoint.Term))
             {
                 return Result.Failure(
-                    new Error("curvePoint.TermNegative", "CurvePoint Term cannot be negative."));
+                    new Error("CurvePoint.TermNegative", "CurvePoint Term cannot be negative."));
             }
 
             // Validate curvePoint value
-            if (decimal.IsNegative(curvePoint.Term))
+            if (decimal.IsNegative(curvePoint.Value))
             {
                 return Result.Failure(
-                    new Error("curvePoint.ValueNegative", "CurvePoint Value cannot be negative."));
+                    new Error("CurvePoint.ValueNegative", "CurvePoint Value cannot be negative."));
             }
 
             return Result.Success();
@@ -82,7 +82,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<Result> UpdateCurvePoint(int id, CurvePoint curvePoint)
         {
-            var existingCurvePoint = _curvePointRepository.GetById(id);
+            var existingCurvePoint = await _curvePointRepository.GetById(id);
             if (existingCurvePoint == null)
             {
                 throw new KeyNotFoundException("Curve point not found.");

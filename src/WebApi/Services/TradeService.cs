@@ -21,25 +21,25 @@ namespace Dot.Net.WebApi.Services
             if (decimal.IsNegative(trade.BuyQuantity))
             {
                 return Result.Failure(
-                    new Error("trade.BuyQuantityNegative", "Trade Buy Quantity cannot be negative."));
+                    new Error("Trade.BuyQuantityNegative", "Trade Buy Quantity cannot be negative."));
             }
             // Validate trade buy price
             if (decimal.IsNegative(trade.BuyPrice))
             {
                 return Result.Failure(
-                    new Error("trade.BuyPriceNegative", "Trade Buy Price Term cannot be negative."));
+                    new Error("Trade.BuyPriceNegative", "Trade Buy Price Term cannot be negative."));
             }
             // Validate trade sell quantity
             if (decimal.IsNegative(trade.SellQuantity))
             {
                 return Result.Failure(
-                    new Error("trade.SellQuantityNegative", "Trade Sell Quantity cannot be negative."));
+                    new Error("Trade.SellQuantityNegative", "Trade Sell Quantity cannot be negative."));
             }
             // Validate trade sell price
             if (decimal.IsNegative(trade.SellPrice))
             {
                 return Result.Failure(
-                    new Error("trade.SellPriceNegative", "Trade Sell Price cannot be negative."));
+                    new Error("Trade.SellPriceNegative", "Trade Sell Price cannot be negative."));
             }
 
             return Result.Success();
