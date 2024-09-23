@@ -96,7 +96,7 @@ namespace Dot.Net.WebApi
                     services.AddScoped<IRatingService, RatingService>();
                     services.AddScoped<ICurvePointService, CurvePointService>();
                     services.AddScoped<IBidService, BidService>();
-                    services.AddScoped<TokenService>();
+                    services.AddScoped<ITokenService, TokenService>();
                     string connString = hostContext.Configuration.GetConnectionString("DefaultConnection");
                     services.AddDbContext<LocalDbContext>(options =>
                     {

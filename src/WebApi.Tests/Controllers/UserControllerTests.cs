@@ -203,7 +203,9 @@ namespace Dot.Net.WebApi.Tests
                 Password = "pwd"
             };
 
-            // Arrange -- no setup required because controller handles this logic and does not call the service
+
+            // Arrange
+            _mockService.Setup(service => service.GetUserById(1)).ReturnsAsync(mockUsers[0]);
             controller = new UserController(_mockService.Object, _tokenService.Object, mockLogger.Object);
 
             // Act - gave value of 1 for id because it does not matter - regardless of id value, method will produce error
@@ -211,13 +213,13 @@ namespace Dot.Net.WebApi.Tests
             var result = await controller.UpdateUser(1, updateUser);
 
             // Assert
-            var badRequestObjectResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal(400, badRequestObjectResult.StatusCode);
+            var unauthorizedObjectResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            Assert.Equal(401, unauthorizedObjectResult.StatusCode);
 
         }
 
         [Fact]
-        public async Task UpdateUser_NotFound_ShouldReturnUnauthorized()
+        public async Task UpdateUser_NotFound_ShouldReturnNotFound()
         {
             User updateUser = new()
             {
@@ -234,8 +236,8 @@ namespace Dot.Net.WebApi.Tests
             var result = await controller.UpdateUser(updateUser.Id, updateUser);
 
             // Assert
-            var notFoundResult = Assert.IsType<UnauthorizedObjectResult>(result);
-            Assert.Equal(401, notFoundResult.StatusCode);
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal(404, notFoundResult.StatusCode);
 
         }
 
@@ -249,8 +251,11 @@ namespace Dot.Net.WebApi.Tests
                 UserName = "NewUser",
                 Password = "Pwd@@44long"
             };
-            _mockService.Setup(service => service.UpdateUser(updateUser.Id, updateUser)).ReturnsAsync(Result.Success);
+
+
+            _mockService.Setup(service => service.UpdateUser(updateUser)).ReturnsAsync(Result.Success);
             _tokenService.Setup(service => service.ValidateToken(It.IsAny<string>())).Returns(1);
+            _mockService.Setup(service => service.GetUserById(1)).ReturnsAsync(mockUsers[0]);
             controller = new UserController(_mockService.Object, _tokenService.Object, mockLogger.Object);
 
             // Act

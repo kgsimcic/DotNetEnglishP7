@@ -36,10 +36,10 @@ namespace Dot.Net.WebApi.Controllers
     {
 
         private readonly IUserService _userService;
-        private readonly TokenService _tokenService;
+        private readonly ITokenService _tokenService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, TokenService tokenService, ILogger<UserController> logger)
+        public UserController(IUserService userService, ITokenService tokenService, ILogger<UserController> logger)
         {
             _userService = userService;
             _tokenService = tokenService;

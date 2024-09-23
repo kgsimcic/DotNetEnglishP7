@@ -145,7 +145,7 @@ namespace Dot.Net.WebApi.Tests
             userService = new UserService(_mockRepository.Object);
 
             // Act and Assert
-            await Assert.ThrowsAsync<KeyNotFoundException>(async () => await userService.UpdateUser(3, newUser));
+            await Assert.ThrowsAsync<KeyNotFoundException>(async () => await userService.UpdateUser(newUser));
         }
 
         [Fact]
@@ -158,7 +158,7 @@ namespace Dot.Net.WebApi.Tests
             userService = new UserService(_mockRepository.Object);
 
             // Act
-            var result = await userService.UpdateUser(1, existingUser);
+            var result = await userService.UpdateUser(existingUser);
 
             // Assert
             Assert.IsType<Result>(result);
@@ -302,13 +302,12 @@ namespace Dot.Net.WebApi.Tests
                 Password = "pass"
             };
 
-            var existingUser = mockUsers[0];
             // Arrange 
-            _mockRepository.Setup(repo => repo.GetById(1)).ReturnsAsync(existingUser);
+            _mockRepository.Setup(repo => repo.GetById(3)).ReturnsAsync(mockUsers[0]);
             userService = new UserService(_mockRepository.Object);
 
             // Act
-            var result = await userService.UpdateUser(1, newUser);
+            var result = await userService.UpdateUser(newUser);
 
             // Assert - should give password too short error
             Assert.IsType<Result>(result);
