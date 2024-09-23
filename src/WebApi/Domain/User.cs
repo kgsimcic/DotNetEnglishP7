@@ -10,7 +10,7 @@ namespace Dot.Net.WebApi.Domain
         [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Username cannot be null.")]
-        public string UserName { get; set; } = string.Empty;
+        public required string UserName { get; set; } = string.Empty;
         [Required(ErrorMessage = "Password cannot be null.")]
         public string Password { get; set; } = String.Empty;
         [Required(ErrorMessage = "Password Salt cannot be null.")]

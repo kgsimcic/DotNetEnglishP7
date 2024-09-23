@@ -29,7 +29,12 @@ namespace Dot.Net.WebApi.Repositories
 # nullable enable
         public async Task<TEntity?> GetById(int id)
         {
-            return await Set().FindAsync(id);
+            var findResult = await Set().FindAsync(id);
+            if (findResult != null)
+            {
+                DbContext.Entry(findResult).State = EntityState.Detached;
+            }
+            return findResult;
         }
 # nullable disable
         public void Add(TEntity entity)

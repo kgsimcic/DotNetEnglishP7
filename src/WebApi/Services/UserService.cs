@@ -49,37 +49,37 @@ namespace Dot.Net.WebApi.Services
             return str.Any(ch => !char.IsLetterOrDigit(ch));
         }
 
-        public Result ValidateUser(User user) {
+        public Result ValidateUser(string username, string password) {
 
             // Validate username
-            if (string.IsNullOrWhiteSpace(user.UserName))
+            if (string.IsNullOrWhiteSpace(username))
             {
                 return Result.Failure(
                     new Error("User.UsernameRequired", "Username is required."));
             }
 
             // Validate password (8 chars at least, one uppercase, number, symbol)
-            if (string.IsNullOrWhiteSpace(user.Password))
+            if (string.IsNullOrWhiteSpace(password))
             {
                 return Result.Failure(
                     new Error("User.PasswordRequired", "Password is required."));
             }
-            else if (user.Password.Length < 8)
+            else if (password.Length < 8)
             {
                 return Result.Failure(
                     new Error("User.PasswordTooShort", "Password must be at least 8 characters long."));
             }
-            else if (string.Equals(user.Password.ToLower(), user.Password))
+            else if (string.Equals(password.ToLower(), password))
             {
                 return Result.Failure(
                     new Error("User.PasswordNeedsUppercase", "Password must contain at least one uppercase character."));
             }
-            else if (!HasNumber(user.Password))
+            else if (!HasNumber(password))
             {
                 return Result.Failure(
                     new Error("User.PasswordNeedsNumber", "Password must have at least one number."));
             }
-            else if (!HasSpecialChar(user.Password))
+            else if (!HasSpecialChar(password))
             {
                 return Result.Failure(
                     new Error("User.PasswordNeedsSpecial", "Password must contain at least one special character."));
@@ -95,7 +95,7 @@ namespace Dot.Net.WebApi.Services
 
         public async Task<Result> CreateUser(User user)
         {
-            var validationResult = ValidateUser(user);
+            var validationResult = ValidateUser(user.UserName, user.Password);
 
             if (!validationResult.IsSuccess)
             {
@@ -112,17 +112,18 @@ namespace Dot.Net.WebApi.Services
             return validationResult;
         }
 
-        public async Task<Result> UpdateUser(int id, User user)
+        public async Task<Result> UpdateUser(User user)
         {
 
-            var existingUser = await _userRepository.GetById(id);
+            var existingUser = await _userRepository.GetById(user.Id);
 
             if (existingUser == null)
             {
                 throw new KeyNotFoundException("User not found.");
             }
 
-            var validationResult = ValidateUser(user);
+            // if username now included in the request, need to change to ""
+            var validationResult = ValidateUser(user.UserName, user.Password);
 
             if (!validationResult.IsSuccess)
             {

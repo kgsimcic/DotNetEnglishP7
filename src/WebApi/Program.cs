@@ -18,6 +18,8 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
+using Dot.Net.WebApi.Controllers.Domain;
+using Dot.Net.WebApi.Controllers;
 
 namespace Dot.Net.WebApi
 {
@@ -81,8 +83,19 @@ namespace Dot.Net.WebApi
                         };
                     });
 
+
+                    services.AddScoped<IRepository<Trade>, Repository<Trade>>();
+                    services.AddScoped<IRepository<Rule>, Repository<Rule>>();
+                    services.AddScoped<IRepository<Rating>, Repository<Rating>>();
+                    services.AddScoped<IRepository<CurvePoint>, Repository<CurvePoint>>();
+                    services.AddScoped<IRepository<Bid>, Repository<Bid>>();
                     services.AddScoped<IUserRepository, UserRepository>();
                     services.AddScoped<IUserService, UserService>();
+                    services.AddScoped<ITradeService, TradeService>();
+                    services.AddScoped<IRuleService, RuleService>();
+                    services.AddScoped<IRatingService, RatingService>();
+                    services.AddScoped<ICurvePointService, CurvePointService>();
+                    services.AddScoped<IBidService, BidService>();
                     services.AddScoped<TokenService>();
                     string connString = hostContext.Configuration.GetConnectionString("DefaultConnection");
                     services.AddDbContext<LocalDbContext>(options =>

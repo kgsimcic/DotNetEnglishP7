@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -35,7 +34,7 @@ namespace Dot.Net.WebApi.Controllers
             return Ok(result);
         }
 
-        [HttpGet("rules/{id}")]
+        [HttpGet("/rules/{id}")]
         public async Task<ActionResult> GetRuleById(int id)
         {
             _logger.LogInformation($"Connected to endpoint /rules/{id}!");

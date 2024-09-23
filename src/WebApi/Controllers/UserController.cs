@@ -36,10 +36,10 @@ namespace Dot.Net.WebApi.Controllers
     {
 
         private readonly IUserService _userService;
-        private readonly ITokenService _tokenService;
+        private readonly TokenService _tokenService;
         private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserService userService, ITokenService tokenService, ILogger<UserController> logger)
+        public UserController(IUserService userService, TokenService tokenService, ILogger<UserController> logger)
         {
             _userService = userService;
             _tokenService = tokenService;
@@ -148,7 +148,14 @@ namespace Dot.Net.WebApi.Controllers
         {
             if (user == null) { return BadRequest("User cannot be null."); }
 
-            if (id != user.Id) { return BadRequest("ID in the URI does not match the ID of the user."); }
+            var existingUser = await _userService.GetUserById(id);
+
+            if (existingUser == null)
+            {
+                return NotFound("No user with the ID in the URI was found.");
+            }
+
+            if (id != existingUser.Id) { return BadRequest("ID in the URI does not match the ID of the user."); }
 
             // test if token is valid/attached
             const string HeaderKeyName = "Bearer";
@@ -174,7 +181,7 @@ namespace Dot.Net.WebApi.Controllers
 
             try
             {
-                var result = await _userService.UpdateUser(id, user);
+                var result = await _userService.UpdateUser(user);
                 if (!result.IsSuccess)
                 {
                     return BadRequest(result.Error.Description);

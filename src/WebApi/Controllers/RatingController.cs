@@ -100,7 +100,7 @@ namespace Dot.Net.WebApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("/rating/{id}")]
+        [HttpDelete("/ratings/{id}")]
         public async Task<ActionResult> DeleteRating(int id)
         {
             _logger.LogInformation($"Connected to endpoint /ratings/{id}!");
